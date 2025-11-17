@@ -33,7 +33,7 @@
 
     body {
       height: 100vh;
-      overflow: hidden; /* prevent scrolling */
+      overflow: hidden; /* keep everything on one screen */
       background: radial-gradient(circle at top, #020617 0, #000 70%);
       color: var(--text);
       display: flex;
@@ -202,7 +202,7 @@
       transform: translateX(-50%);
       bottom: -10px;
       background: radial-gradient(circle at top, #f97316 0, #ef4444 70%);
-      clip-path: polygon(50% 100%, 0 0, 100% 0);
+      clip-path: polygon(50% 100%, 0 0, 100 0);
       opacity: 0.9;
       animation: flame 0.25s infinite alternate;
       filter: blur(0.3px);
@@ -351,6 +351,41 @@
       margin-top: 6px;
     }
 
+    /* Pause overlay */
+    .pause {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at top, rgba(15, 23, 42, 0.7), rgba(15, 23, 42, 0.92));
+      color: var(--text);
+      text-align: center;
+      padding: 16px;
+      z-index: 15;
+      font-size: 0.95rem;
+    }
+
+    .pause.hidden {
+      display: none;
+    }
+
+    .pause-title {
+      font-size: 1.2rem;
+      margin-bottom: 4px;
+    }
+
+    .pause-count {
+      font-size: 1.8rem;
+      margin: 4px 0;
+    }
+
+    .pause-sub {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
     @media (max-width: 480px) {
       h1 {
         font-size: 1.4rem;
@@ -405,6 +440,13 @@
         <button id="startBtn">Launch</button>
         <div class="hint">Tip: Use power-ups when the screen gets crowded.</div>
       </div>
+
+      <!-- Pause overlay -->
+      <div id="pauseOverlay" class="pause hidden">
+        <div class="pause-title">Paused</div>
+        <div class="pause-count"></div>
+        <div class="pause-sub">Game paused.</div>
+      </div>
     </div>
   </div>
 
@@ -421,26 +463,31 @@
       const chipSlow = document.getElementById("chipSlow");
       const chipBlast = document.getElementById("chipBlast");
 
-      // Virtual game space
+      const pauseOverlay = document.getElementById("pauseOverlay");
+      const pauseTitle = pauseOverlay.querySelector(".pause-title");
+      const pauseCount = pauseOverlay.querySelector(".pause-count");
+      const pauseSub = pauseOverlay.querySelector(".pause-sub");
+
+      // Game space
       const GAME_WIDTH = 480;
       const GAME_HEIGHT = 640;
 
-      // Player settings
+      // Player
       const PLAYER_WIDTH = 60;
       const PLAYER_HEIGHT = 30;
       const PLAYER_SPEED = 340;
 
-      // Enemy settings
+      // Enemies
       const ENEMY_WIDTH = 46;
       const ENEMY_HEIGHT = 30;
       const BASE_ENEMY_SPEED = 190;
       const BASE_SPAWN_INTERVAL = 0.8;
 
-      // Bullet settings
+      // Bullets (slightly slower now)
       const BULLET_WIDTH = 6;
       const BULLET_HEIGHT = 18;
-      const BULLET_SPEED = 430;
-      const FIRE_COOLDOWN = 0.25; // seconds
+      const BULLET_SPEED = 360;   // was 430
+      const FIRE_COOLDOWN = 0.25;
 
       // Power-ups
       const POWERUP_SIZE = 26;
@@ -470,7 +517,13 @@
       let shootPressed = false;
       let fireCooldownTimer = 0;
 
-      // Power-up state
+      // Pause state
+      let paused = false;
+      let pendingResumeCountdown = false;
+      let countdownTime = 0;
+      const RESUME_COUNTDOWN_SECONDS = 3;
+
+      // Power-ups
       let shieldActive = false;
       let shieldTimer = 0;
 
@@ -597,7 +650,7 @@
       }
 
       function fireBullet() {
-        if (!running) return;
+        if (!running || paused) return;
         if (fireCooldownTimer > 0) return;
 
         const bulletX = playerX + PLAYER_WIDTH / 2 - BULLET_WIDTH / 2;
@@ -625,7 +678,7 @@
 
       function updateDifficulty(dt) {
         const difficultyFactor = 1 + elapsedTime / 22;
-        let slowFactor = slowActive ? 0.45 : 1;
+        const slowFactor = slowActive ? 0.45 : 1;
         enemySpeed = BASE_ENEMY_SPEED * difficultyFactor * slowFactor;
         spawnInterval = BASE_SPAWN_INTERVAL / Math.min(difficultyFactor, 2.8);
       }
@@ -670,7 +723,7 @@
       }
 
       function updateGame(dt) {
-        if (!running) return;
+        if (!running || paused) return;
 
         elapsedTime += dt;
         score += dt * 12;
@@ -690,7 +743,7 @@
           playerX = GAME_WIDTH - PLAYER_WIDTH;
         }
 
-        // Auto-fire when shoot key held
+        // Auto-fire while key held
         if (shootPressed) fireBullet();
 
         // Spawn enemies
@@ -711,44 +764,28 @@
           spawnPowerup();
         }
 
-        // Move enemies
-        enemies.forEach((enemy) => {
-          enemy.y += enemySpeed * dt;
-        });
+        // Move entities
+        enemies.forEach((e) => (e.y += enemySpeed * dt));
+        powerups.forEach((p) => (p.y += POWERUP_SPEED * dt));
+        bullets.forEach((b) => (b.y -= BULLET_SPEED * dt));
 
-        // Move power-ups
-        powerups.forEach((p) => {
-          p.y += POWERUP_SPEED * dt;
-        });
-
-        // Move bullets
-        bullets.forEach((b) => {
-          b.y -= BULLET_SPEED * dt;
-        });
-
-        // Remove off-screen enemies
-        enemies = enemies.filter((enemy) => {
-          if (enemy.y > GAME_HEIGHT + 60) {
-            if (enemy.el && enemy.el.parentNode) {
-              enemy.el.parentNode.removeChild(enemy.el);
-            }
+        // Cleanup off-screen
+        enemies = enemies.filter((e) => {
+          if (e.y > GAME_HEIGHT + 60) {
+            if (e.el && e.el.parentNode) e.el.parentNode.removeChild(e.el);
             return false;
           }
           return true;
         });
 
-        // Remove off-screen power-ups
         powerups = powerups.filter((p) => {
           if (p.y > GAME_HEIGHT + 40) {
-            if (p.el && p.el.parentNode) {
-              p.el.parentNode.removeChild(p.el);
-            }
+            if (p.el && p.el.parentNode) p.el.parentNode.removeChild(p.el);
             return false;
           }
           return true;
         });
 
-        // Remove off-screen bullets
         bullets = bullets.filter((b) => {
           if (b.y < -40) {
             if (b.el && b.el.parentNode) b.el.parentNode.removeChild(b.el);
@@ -779,7 +816,7 @@
           }
         });
 
-        // Bullet vs enemy collisions
+        // Bullet vs enemy
         for (let i = enemies.length - 1; i >= 0; i--) {
           const enemy = enemies[i];
           const eRect = {
@@ -798,7 +835,6 @@
               height: b.height,
             };
             if (rectsOverlap(eRect, bRect)) {
-              // Destroy both
               if (enemy.el && enemy.el.parentNode)
                 enemy.el.parentNode.removeChild(enemy.el);
               enemies.splice(i, 1);
@@ -807,13 +843,13 @@
                 b.el.parentNode.removeChild(b.el);
               bullets.splice(j, 1);
 
-              score += 8; // bonus for shooting
+              score += 8;
               break;
             }
           }
         }
 
-        // Enemy vs player collisions
+        // Enemy vs player
         for (let i = 0; i < enemies.length; i++) {
           const enemy = enemies[i];
           const eRect = {
@@ -848,8 +884,30 @@
         if (!lastTimestamp) lastTimestamp = timestamp;
         const dt = (timestamp - lastTimestamp) / 1000;
         lastTimestamp = timestamp;
+
+        if (paused) {
+          if (pendingResumeCountdown) {
+            updateResumeCountdown(dt);
+          }
+          requestAnimationFrame(loop);
+          return;
+        }
+
         updateGame(dt);
         requestAnimationFrame(loop);
+      }
+
+      function updateResumeCountdown(dt) {
+        if (!pendingResumeCountdown) return;
+        countdownTime -= dt;
+        const remaining = Math.ceil(countdownTime);
+        if (remaining <= 0) {
+          pendingResumeCountdown = false;
+          paused = false;
+          pauseOverlay.classList.add("hidden");
+        } else {
+          pauseCount.textContent = remaining.toString();
+        }
       }
 
       function clearAllEntities() {
@@ -891,13 +949,21 @@
 
         fireCooldownTimer = 0;
 
+        paused = false;
+        pendingResumeCountdown = false;
+        pauseOverlay.classList.add("hidden");
+
         scoreEl.textContent = "0";
         messageEl.classList.add("hidden");
         running = true;
+        lastTimestamp = 0;
       }
 
       function gameOver() {
         running = false;
+        paused = false;
+        pendingResumeCountdown = false;
+        pauseOverlay.classList.add("hidden");
 
         const finalScore = Math.floor(score);
         if (finalScore > bestScore) {
@@ -915,7 +981,47 @@
         messageEl.classList.remove("hidden");
       }
 
-      // Controls
+      // --- Pause / resume on tab switch ---
+      function autoPause() {
+        if (!running || paused) return;
+        paused = true;
+        pendingResumeCountdown = false;
+        pauseTitle.textContent = "Paused";
+        pauseSub.textContent = "Game paused because you left the tab.";
+        pauseCount.textContent = "";
+        pauseOverlay.classList.remove("hidden");
+      }
+
+      function autoResume() {
+        if (!running) return;
+        // Start 3-second countdown
+        paused = true;
+        pendingResumeCountdown = true;
+        countdownTime = RESUME_COUNTDOWN_SECONDS;
+        pauseTitle.textContent = "Get ready…";
+        pauseSub.textContent = "Resuming in";
+        pauseCount.textContent = Math.ceil(countdownTime).toString();
+        pauseOverlay.classList.remove("hidden");
+        lastTimestamp = 0; // reset dt to avoid big jump
+      }
+
+      document.addEventListener("visibilitychange", () => {
+        if (!running) return;
+        if (document.hidden) {
+          autoPause();
+        } else {
+          autoResume();
+        }
+      });
+
+      window.addEventListener("blur", () => {
+        if (!document.hidden) autoPause();
+      });
+      window.addEventListener("focus", () => {
+        if (!document.hidden) autoResume();
+      });
+
+      // --- Controls ---
       window.addEventListener("keydown", (e) => {
         if (e.code === "ArrowLeft" || e.code === "KeyA") {
           leftPressed = true;
@@ -950,7 +1056,7 @@
         }
       });
 
-      // Mobile/touch: tap left/right to move
+      // Mobile: tap left/right to move
       function handlePointer(event) {
         const rect = gameArea.getBoundingClientRect();
         const x = event.clientX || (event.touches && event.touches[0].clientX);
