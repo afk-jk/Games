@@ -52,11 +52,6 @@
       backdrop-filter: blur(10px);
     }
 
-    header-top {
-      display: flex;
-      justify-content: space-between;
-    }
-
     header h1 {
       font-size: 1.7rem;
       margin-bottom: 2px;
@@ -169,6 +164,52 @@
       background: radial-gradient(circle at top, #1f2937 0, #020617 70%);
     }
 
+    /* Thumbnail (image area) */
+    .game-thumb {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border-radius: 12px;
+      margin-bottom: 6px;
+      background:
+        radial-gradient(circle at top, #1f2937 0, #020617 70%);
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      color: rgba(226, 232, 240, 0.9);
+    }
+
+    .game-thumb::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 20% 0%, rgba(56, 189, 248, 0.25), transparent 55%),
+        radial-gradient(circle at 80% 100%, rgba(129, 140, 248, 0.25), transparent 55%);
+      mix-blend-mode: screen;
+      opacity: 0.9;
+    }
+
+    .game-thumb-label {
+      position: relative;
+      z-index: 1;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(148, 163, 184, 0.5);
+    }
+
+    /* If you use real images later, they will fill this area */
+    .game-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
     .game-title {
       font-weight: 600;
       margin-bottom: 2px;
@@ -199,7 +240,7 @@
     }
 
     .coming-soon {
-      opacity: 0.8;
+      opacity: 0.85;
       cursor: default;
     }
 
@@ -333,8 +374,14 @@
         </div>
 
         <section class="games-grid">
-          <!-- Slot 1: linked game -->
+          <!-- Slot 1: live game -->
           <a class="game-card" href="square-dodger.html">
+            <div class="game-thumb">
+              <!-- Replace with real image later:
+              <img src="images/space-dodger.png" alt="Space Dodger" />
+              -->
+              <div class="game-thumb-label">Space Dodger</div>
+            </div>
             <div class="game-tag">Live</div>
             <div class="game-title">Space Dodger</div>
             <div class="game-desc">
@@ -344,9 +391,11 @@
           </a>
 
           <!-- Slots 2–30: placeholders -->
-          <!-- You can change href to real game files later -->
           <!-- Slot 2 -->
           <div class="game-card coming-soon">
+            <div class="game-thumb">
+              <div class="game-thumb-label">Game #2</div>
+            </div>
             <div class="game-tag">Coming soon</div>
             <div class="game-title">Game Slot #2</div>
             <div class="game-desc">
@@ -357,6 +406,9 @@
 
           <!-- Slot 3 -->
           <div class="game-card coming-soon">
+            <div class="game-thumb">
+              <div class="game-thumb-label">Game #3</div>
+            </div>
             <div class="game-tag">Coming soon</div>
             <div class="game-title">Game Slot #3</div>
             <div class="game-desc">
@@ -365,11 +417,11 @@
             <div class="game-slot-number">Slot #3</div>
           </div>
 
-          <!-- Slots 4–30 -->
-          <!-- You can quickly edit these texts to name real games later -->
-          <!-- I'll just number them out for you -->
           <!-- Slot 4 -->
           <div class="game-card coming-soon">
+            <div class="game-thumb">
+              <div class="game-thumb-label">Game #4</div>
+            </div>
             <div class="game-tag">Coming soon</div>
             <div class="game-title">Game Slot #4</div>
             <div class="game-desc">Placeholder for a future mini game.</div>
@@ -378,6 +430,9 @@
 
           <!-- Slot 5 -->
           <div class="game-card coming-soon">
+            <div class="game-thumb">
+              <div class="game-thumb-label">Game #5</div>
+            </div>
             <div class="game-tag">Coming soon</div>
             <div class="game-title">Game Slot #5</div>
             <div class="game-desc">Placeholder for a future mini game.</div>
@@ -386,6 +441,9 @@
 
           <!-- Slot 6 -->
           <div class="game-card coming-soon">
+            <div class="game-thumb">
+              <div class="game-thumb-label">Game #6</div>
+            </div>
             <div class="game-tag">Coming soon</div>
             <div class="game-title">Game Slot #6</div>
             <div class="game-desc">Placeholder for a future mini game.</div>
@@ -394,6 +452,9 @@
 
           <!-- Slot 7 -->
           <div class="game-card coming-soon">
+            <div class="game-thumb">
+              <div class="game-thumb-label">Game #7</div>
+            </div>
             <div class="game-tag">Coming soon</div>
             <div class="game-title">Game Slot #7</div>
             <div class="game-desc">Placeholder for a future mini game.</div>
@@ -402,6 +463,9 @@
 
           <!-- Slot 8 -->
           <div class="game-card coming-soon">
+            <div class="game-thumb">
+              <div class="game-thumb-label">Game #8</div>
+            </div>
             <div class="game-tag">Coming soon</div>
             <div class="game-title">Game Slot #8</div>
             <div class="game-desc">Placeholder for a future mini game.</div>
@@ -410,6 +474,9 @@
 
           <!-- Slot 9 -->
           <div class="game-card coming-soon">
+            <div class="game-thumb">
+              <div class="game-thumb-label">Game #9</div>
+            </div>
             <div class="game-tag">Coming soon</div>
             <div class="game-title">Game Slot #9</div>
             <div class="game-desc">Placeholder for a future mini game.</div>
@@ -418,6 +485,9 @@
 
           <!-- Slot 10 -->
           <div class="game-card coming-soon">
+            <div class="game-thumb">
+              <div class="game-thumb-label">Game #10</div>
+            </div>
             <div class="game-tag">Coming soon</div>
             <div class="game-title">Game Slot #10</div>
             <div class="game-desc">Placeholder for a future mini game.</div>
@@ -426,6 +496,9 @@
 
           <!-- Slot 11 -->
           <div class="game-card coming-soon">
+            <div class="game-thumb">
+              <div class="game-thumb-label">Game #11</div>
+            </div>
             <div class="game-tag">Coming soon</div>
             <div class="game-title">Game Slot #11</div>
             <div class="game-desc">Placeholder for a future mini game.</div>
@@ -434,6 +507,9 @@
 
           <!-- Slot 12 -->
           <div class="game-card coming-soon">
+            <div class="game-thumb">
+              <div class="game-thumb-label">Game #12</div>
+            </div>
             <div class="game-tag">Coming soon</div>
             <div class="game-title">Game Slot #12</div>
             <div class="game-desc">Placeholder for a future mini game.</div>
@@ -442,6 +518,9 @@
 
           <!-- Slot 13 -->
           <div class="game-card coming-soon">
+            <div class="game-thumb">
+              <div class="game-thumb-label">Game #13</div>
+            </div>
             <div class="game-tag">Coming soon</div>
             <div class="game-title">Game Slot #13</div>
             <div class="game-desc">Placeholder for a future mini game.</div>
@@ -450,6 +529,9 @@
 
           <!-- Slot 14 -->
           <div class="game-card coming-soon">
+            <div class="game-thumb">
+              <div class="game-thumb-label">Game #14</div>
+            </div>
             <div class="game-tag">Coming soon</div>
             <div class="game-title">Game Slot #14</div>
             <div class="game-desc">Placeholder for a future mini game.</div>
@@ -458,6 +540,9 @@
 
           <!-- Slot 15 -->
           <div class="game-card coming-soon">
+            <div class="game-thumb">
+              <div class="game-thumb-label">Game #15</div>
+            </div>
             <div class="game-tag">Coming soon</div>
             <div class="game-title">Game Slot #15</div>
             <div class="game-desc">Placeholder for a future mini game.</div>
@@ -466,6 +551,9 @@
 
           <!-- Slot 16 -->
           <div class="game-card coming-soon">
+            <div class="game-thumb">
+              <div class="game-thumb-label">Game #16</div>
+            </div>
             <div class="game-tag">Coming soon</div>
             <div class="game-title">Game Slot #16</div>
             <div class="game-desc">Placeholder for a future mini game.</div>
@@ -474,6 +562,9 @@
 
           <!-- Slot 17 -->
           <div class="game-card coming-soon">
+            <div class="game-thumb">
+              <div class="game-thumb-label">Game #17</div>
+            </div>
             <div class="game-tag">Coming soon</div>
             <div class="game-title">Game Slot #17</div>
             <div class="game-desc">Placeholder for a future mini game.</div>
@@ -482,6 +573,9 @@
 
           <!-- Slot 18 -->
           <div class="game-card coming-soon">
+            <div class="game-thumb">
+              <div class="game-thumb-label">Game #18</div>
+            </div>
             <div class="game-tag">Coming soon</div>
             <div class="game-title">Game Slot #18</div>
             <div class="game-desc">Placeholder for a future mini game.</div>
@@ -490,6 +584,9 @@
 
           <!-- Slot 19 -->
           <div class="game-card coming-soon">
+            <div class="game-thumb">
+              <div class="game-thumb-label">Game #19</div>
+            </div>
             <div class="game-tag">Coming soon</div>
             <div class="game-title">Game Slot #19</div>
             <div class="game-desc">Placeholder for a future mini game.</div>
@@ -498,6 +595,9 @@
 
           <!-- Slot 20 -->
           <div class="game-card coming-soon">
+            <div class="game-thumb">
+              <div class="game-thumb-label">Game #20</div>
+            </div>
             <div class="game-tag">Coming soon</div>
             <div class="game-title">Game Slot #20</div>
             <div class="game-desc">Placeholder for a future mini game.</div>
@@ -506,6 +606,9 @@
 
           <!-- Slot 21 -->
           <div class="game-card coming-soon">
+            <div class="game-thumb">
+              <div class="game-thumb-label">Game #21</div>
+            </div>
             <div class="game-tag">Coming soon</div>
             <div class="game-title">Game Slot #21</div>
             <div class="game-desc">Placeholder for a future mini game.</div>
@@ -514,6 +617,9 @@
 
           <!-- Slot 22 -->
           <div class="game-card coming-soon">
+            <div class="game-thumb">
+              <div class="game-thumb-label">Game #22</div>
+            </div>
             <div class="game-tag">Coming soon</div>
             <div class="game-title">Game Slot #22</div>
             <div class="game-desc">Placeholder for a future mini game.</div>
@@ -522,6 +628,9 @@
 
           <!-- Slot 23 -->
           <div class="game-card coming-soon">
+            <div class="game-thumb">
+              <div class="game-thumb-label">Game #23</div>
+            </div>
             <div class="game-tag">Coming soon</div>
             <div class="game-title">Game Slot #23</div>
             <div class="game-desc">Placeholder for a future mini game.</div>
@@ -530,6 +639,9 @@
 
           <!-- Slot 24 -->
           <div class="game-card coming-soon">
+            <div class="game-thumb">
+              <div class="game-thumb-label">Game #24</div>
+            </div>
             <div class="game-tag">Coming soon</div>
             <div class="game-title">Game Slot #24</div>
             <div class="game-desc">Placeholder for a future mini game.</div>
@@ -538,6 +650,9 @@
 
           <!-- Slot 25 -->
           <div class="game-card coming-soon">
+            <div class="game-thumb">
+              <div class="game-thumb-label">Game #25</div>
+            </div>
             <div class="game-tag">Coming soon</div>
             <div class="game-title">Game Slot #25</div>
             <div class="game-desc">Placeholder for a future mini game.</div>
@@ -546,6 +661,9 @@
 
           <!-- Slot 26 -->
           <div class="game-card coming-soon">
+            <div class="game-thumb">
+              <div class="game-thumb-label">Game #26</div>
+            </div>
             <div class="game-tag">Coming soon</div>
             <div class="game-title">Game Slot #26</div>
             <div class="game-desc">Placeholder for a future mini game.</div>
@@ -554,6 +672,9 @@
 
           <!-- Slot 27 -->
           <div class="game-card coming-soon">
+            <div class="game-thumb">
+              <div class="game-thumb-label">Game #27</div>
+            </div>
             <div class="game-tag">Coming soon</div>
             <div class="game-title">Game Slot #27</div>
             <div class="game-desc">Placeholder for a future mini game.</div>
@@ -562,6 +683,9 @@
 
           <!-- Slot 28 -->
           <div class="game-card coming-soon">
+            <div class="game-thumb">
+              <div class="game-thumb-label">Game #28</div>
+            </div>
             <div class="game-tag">Coming soon</div>
             <div class="game-title">Game Slot #28</div>
             <div class="game-desc">Placeholder for a future mini game.</div>
@@ -570,6 +694,9 @@
 
           <!-- Slot 29 -->
           <div class="game-card coming-soon">
+            <div class="game-thumb">
+              <div class="game-thumb-label">Game #29</div>
+            </div>
             <div class="game-tag">Coming soon</div>
             <div class="game-title">Game Slot #29</div>
             <div class="game-desc">Placeholder for a future mini game.</div>
@@ -578,6 +705,9 @@
 
           <!-- Slot 30 -->
           <div class="game-card coming-soon">
+            <div class="game-thumb">
+              <div class="game-thumb-label">Game #30</div>
+            </div>
             <div class="game-tag">Coming soon</div>
             <div class="game-title">Game Slot #30</div>
             <div class="game-desc">Placeholder for a future mini game.</div>
@@ -592,7 +722,7 @@
         </div>
 
         <footer>
-          Tip: point each slot to its own <code>.html</code> file as you add games.
+          Tip: point each slot to its own <code>.html</code> file and swap the thumbnail with a real image.
         </footer>
       </section>
 
