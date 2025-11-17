@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>2048 – Mini Games Arcade</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --bg: #020617;
+      --bg-soft: #0f172a;
+      --board: #111827;
+      --tile-empty: #020617;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --accent: #38bdf8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+    }
+
+    html, body {
+      height: 100%;
+    }
+
+    body {
+      height: 100vh;
+      overflow: hidden;
+      background: radial-gradient(circle at top, #1f2937 0, #020617 55%);
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px;
+    }
+
+    .wrapper {
+      width: 100%;
+      max-width: 520px;
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .back-link {
+      text-decoration: none;
+      font-size: 0.8rem;
+      color: var(--muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 9px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      background: rgba(15, 23, 42, 0.9);
+    }
+
+    .back-link:hover {
+      border-color: rgba(56, 189, 248, 0.9);
+      color: var(--text);
+    }
+
+    h1 {
+      font-size: 1.6rem;
+      margin-bottom: 2px;
+    }
+
+    .subtitle {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .controls {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .controls span {
+      display: inline-block;
+      background: rgba(15, 23, 42, 0.85);
+      border-radius: 999px;
+      padding: 3px 8px;
+      margin: 1px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+    }
+
+    .game-container {
+      background: radial-gradient(circle at top, #111827 0, #020617 70%);
+      border-radius: 20px;
+      padding: 12px 12px 14px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      box-shadow: 0 18px 45px rgba(0, 0, 0, 0.65);
+    }
+
+    .score-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      gap: 10px;
+    }
+
+    .score-box {
+      min-width: 90px;
+      padding: 6px 10px;
+      border-radius: 10px;
+      background: rgba(15,23,42,0.95);
+      border: 1px solid rgba(148,163,184,0.45);
+      text-align: center;
+    }
+
+    .score-label {
+      font-size: 0.7rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .score-value {
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+
+    .btn {
+      border: none;
+      outline: none;
+      padding: 7px 14px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--accent), #1d4ed8);
+      color: white;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.85rem;
+      box-shadow: 0 8px 18px rgba(37, 99, 235, 0.4);
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
+      white-space: nowrap;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 22px rgba(37, 99, 235, 0.55);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+      box-shadow: 0 6px 14px rgba(37, 99, 235, 0.35);
+    }
+
+    .board-wrapper {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      margin: 0 auto;
+      background: var(--board);
+      border-radius: 16px;
+      padding: 10px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: repeat(4, 1fr);
+      gap: 8px;
+      user-select: none;
+      touch-action: none;
+    }
+
+    .cell {
+      background: var(--tile-empty);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1.4rem;
+      color: #f9fafb;
+      box-shadow: inset 0 0 0 1px rgba(15,23,42,0.9);
+      transition: transform 0.08s ease-out;
+    }
+
+    .cell.new {
+      animation: pop 0.18s ease-out;
+    }
+
+    @keyframes pop {
+      from { transform: scale(0.4); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    /* Tile colours */
+    .v2    { background: #1e293b; color: #e5e7eb; }
+    .v4    { background: #0ea5e9; }
+    .v8    { background: #22c55e; }
+    .v16   { background: #f97316; }
+    .v32   { background: #ef4444; }
+    .v64   { background: #ec4899; }
+    .v128  { background: #a855f7; font-size: 1.3rem; }
+    .v256  { background: #6366f1; font-size: 1.3rem; }
+    .v512  { background: #eab308; font-size: 1.3rem; }
+    .v1024 { background: #facc15; font-size: 1.15rem; }
+    .v2048 { background: #22c55e; font-size: 1.15rem; box-shadow: 0 0 18px rgba(34,197,94,0.9); }
+
+    .message {
+      margin-top: 6px;
+      font-size: 0.8rem;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .message span {
+      display: inline-block;
+    }
+
+    .status {
+      font-weight: 600;
+    }
+
+    .status.win { color: #22c55e; }
+    .status.lose { color: #f97316; }
+
+    @media (max-width: 480px) {
+      h1 { font-size: 1.4rem; }
+      .subtitle { font-size: 0.8rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="top-bar">
+      <a class="back-link" href="index.html">← Back to games</a>
+    </div>
+
+    <h1>2048</h1>
+    <p class="subtitle">Slide the tiles to combine matching numbers and reach 2048.</p>
+
+    <div class="controls">
+      <span>Move: ← ↑ → ↓ or W A S D</span>
+      <span>Restart: R or Restart button</span>
+      <span>Mobile: swipe in the board</span>
+    </div>
+
+    <div class="game-container">
+      <div class="score-bar">
+        <div style="display:flex; gap:8px;">
+          <div class="score-box">
+            <div class="score-label">Score</div>
+            <div id="score" class="score-value">0</div>
+          </div>
+          <div class="score-box">
+            <div class="score-label">Best</div>
+            <div id="best" class="score-value">0</div>
+          </div>
+        </div>
+        <button id="restartBtn" class="btn">Restart</button>
+      </div>
+
+      <div id="board" class="board-wrapper"></div>
+
+      <div class="message">
+        <span class="status" id="statusText"></span>
+        <span>Tip: keep your biggest tile in a corner.</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const SIZE = 4;
+      const boardEl = document.getElementById("board");
+      const scoreEl = document.getElementById("score");
+      const bestEl = document.getElementById("best");
+      const restartBtn = document.getElementById("restartBtn");
+      const statusText = document.getElementById("statusText");
+      const BEST_KEY = "arcade2048Best";
+
+      let board = [];
+      let score = 0;
+      let best = Number(localStorage.getItem(BEST_KEY)) || 0;
+
+      bestEl.textContent = best;
+
+      function createEmptyBoard() {
+        board = [];
+        for (let r = 0; r < SIZE; r++) {
+          const row = [];
+          for (let c = 0; c < SIZE; c++) row.push(0);
+          board.push(row);
+        }
+      }
+
+      function getEmptyCells() {
+        const cells = [];
+        for (let r = 0; r < SIZE; r++) {
+          for (let c = 0; c < SIZE; c++) {
+            if (board[r][c] === 0) cells.push({ r, c });
+          }
+        }
+        return cells;
+      }
+
+      function spawnTile() {
+        const empty = getEmptyCells();
+        if (empty.length === 0) return;
+        const choice = empty[Math.floor(Math.random() * empty.length)];
+        board[choice.r][choice.c] = Math.random() < 0.9 ? 2 : 4;
+      }
+
+      function updateScore(delta) {
+        score += delta;
+        scoreEl.textContent = score;
+        if (score > best) {
+          best = score;
+          bestEl.textContent = best;
+          localStorage.setItem(BEST_KEY, best);
+        }
+      }
+
+      function drawBoard(newTilePositions) {
+        boardEl.innerHTML = "";
+        for (let r = 0; r < SIZE; r++) {
+          for (let c = 0; c < SIZE; c++) {
+            const value = board[r][c];
+            const cell = document.createElement("div");
+            cell.className = "cell";
+            if (value !== 0) {
+              cell.textContent = value;
+              cell.classList.add("v" + value);
+              if (newTilePositions.some(p => p.r === r && p.c === c)) {
+                cell.classList.add("new");
+              }
+            }
+            boardEl.appendChild(cell);
+          }
+        }
+      }
+
+      function slideRow(row) {
+        const nonZero = row.filter(v => v !== 0);
+        const result = [];
+        let scoreGained = 0;
+
+        for (let i = 0; i < nonZero.length; i++) {
+          if (nonZero[i] === nonZero[i + 1]) {
+            const merged = nonZero[i] * 2;
+            result.push(merged);
+            scoreGained += merged;
+            i++; // skip next
+          } else {
+            result.push(nonZero[i]);
+          }
+        }
+        while (result.length < SIZE) result.push(0);
+        return { row: result, scoreGained };
+      }
+
+      function rotateBoard(times) {
+        // rotate clockwise times
+        for (let t = 0; t < times; t++) {
+          const newBoard = [];
+          for (let c = 0; c < SIZE; c++) {
+            const newRow = [];
+            for (let r = SIZE - 1; r >= 0; r--) {
+              newRow.push(board[r][c]);
+            }
+            newBoard.push(newRow);
+          }
+          board = newBoard;
+        }
+      }
+
+      function move(direction) {
+        // 0 = left, 1 = up, 2 = right, 3 = down
+        let rotations = 0;
+        if (direction === "left") rotations = 0;
+        if (direction === "up") rotations = 1;
+        if (direction === "right") rotations = 2;
+        if (direction === "down") rotations = 3;
+
+        rotateBoard(rotations);
+        let moved = false;
+        let totalGained = 0;
+
+        for (let r = 0; r < SIZE; r++) {
+          const current = board[r];
+          const { row: newRow, scoreGained } = slideRow(current);
+          if (!arraysEqual(current, newRow)) {
+            board[r] = newRow;
+            moved = true;
+          }
+          totalGained += scoreGained;
+        }
+
+        rotateBoard((4 - rotations) % 4);
+
+        if (moved) {
+          updateScore(totalGained);
+          const before = getEmptyCells().length;
+          spawnTile();
+          const after = getEmptyCells().length;
+          const newTiles = [];
+          if (after !== before - 1) {
+            // can't easily detect; just treat all empty diff as new
+          }
+          // simpler: mark all tiles with value 2 or 4 that were just zero last time;
+          // but we skip for simplicity and no "new" animation accuracy.
+          drawBoard([]); 
+          checkGameState();
+        }
+      }
+
+      function arraysEqual(a, b) {
+        if (a.length !== b.length) return false;
+        for (let i = 0; i < a.length; i++) {
+          if (a[i] !== b[i]) return false;
+        }
+        return true;
+      }
+
+      function hasMovesAvailable() {
+        if (getEmptyCells().length > 0) return true;
+        // check merges
+        for (let r = 0; r < SIZE; r++) {
+          for (let c = 0; c < SIZE; c++) {
+            const value = board[r][c];
+            if (
+              (r < SIZE - 1 && board[r + 1][c] === value) ||
+              (c < SIZE - 1 && board[r][c + 1] === value)
+            ) {
+              return true;
+            }
+          }
+        }
+        return false;
+      }
+
+      function checkGameState() {
+        let has2048 = false;
+        for (let r = 0; r < SIZE; r++) {
+          for (let c = 0; c < SIZE; c++) {
+            if (board[r][c] === 2048) {
+              has2048 = true;
+              break;
+            }
+          }
+        }
+        if (has2048) {
+          statusText.textContent = "You reached 2048! 🎉";
+          statusText.className = "status win";
+        } else if (!hasMovesAvailable()) {
+          statusText.textContent = "No moves left. Game over.";
+          statusText.className = "status lose";
+        } else {
+          statusText.textContent = "";
+          statusText.className = "status";
+        }
+      }
+
+      function restart() {
+        score = 0;
+        scoreEl.textContent = "0";
+        statusText.textContent = "";
+        statusText.className = "status";
+        createEmptyBoard();
+        spawnTile();
+        spawnTile();
+        drawBoard([]);
+      }
+
+      // Keyboard controls
+      window.addEventListener("keydown", (e) => {
+        const key = e.key;
+        if (key === "ArrowLeft" || key === "a" || key === "A") {
+          e.preventDefault();
+          move("left");
+        } else if (key === "ArrowRight" || key === "d" || key === "D") {
+          e.preventDefault();
+          move("right");
+        } else if (key === "ArrowUp" || key === "w" || key === "W") {
+          e.preventDefault();
+          move("up");
+        } else if (key === "ArrowDown" || key === "s" || key === "S") {
+          e.preventDefault();
+          move("down");
+        } else if (key === "r" || key === "R") {
+          restart();
+        }
+      });
+
+      // Touch/swipe controls
+      let touchStartX = 0;
+      let touchStartY = 0;
+      let touchActive = false;
+
+      boardEl.addEventListener("touchstart", (e) => {
+        if (e.touches.length !== 1) return;
+        const t = e.touches[0];
+        touchStartX = t.clientX;
+        touchStartY = t.clientY;
+        touchActive = true;
+      });
+
+      boardEl.addEventListener("touchmove", (e) => {
+        if (!touchActive) return;
+        e.preventDefault();
+      }, { passive: false });
+
+      boardEl.addEventListener("touchend", (e) => {
+        if (!touchActive) return;
+        touchActive = false;
+        const t = e.changedTouches[0];
+        const dx = t.clientX - touchStartX;
+        const dy = t.clientY - touchStartY;
+        const absX = Math.abs(dx);
+        const absY = Math.abs(dy);
+        const threshold = 20;
+        if (absX < threshold && absY < threshold) return;
+        if (absX > absY) {
+          move(dx > 0 ? "right" : "left");
+        } else {
+          move(dy > 0 ? "down" : "up");
+        }
+      });
+
+      restartBtn.addEventListener("click", restart);
+
+      // Init
+      restart();
+    })();
+  </script>
+</body>
+</html>
