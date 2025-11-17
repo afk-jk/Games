@@ -28,21 +28,86 @@
       background: radial-gradient(circle at top, #1f2937 0, #020617 55%);
       color: var(--text);
       display: flex;
-      align-items: center;
       justify-content: center;
-      padding: 24px;
+      padding: 16px;
     }
 
     .page {
-      max-width: 1100px;
       width: 100%;
-      display: grid;
-      grid-template-columns: 220px minmax(0, 1fr) 220px;
+      max-width: 1200px;
+      display: flex;
+      flex-direction: column;
       gap: 16px;
     }
 
-    @media (max-width: 900px) {
-      .page {
+    header {
+      background: radial-gradient(circle at top, #111827 0, #020617 70%);
+      border-radius: 18px;
+      border: 1px solid rgba(148, 163, 184, 0.45);
+      box-shadow: 0 14px 32px rgba(0, 0, 0, 0.6);
+      padding: 14px 16px 12px;
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      backdrop-filter: blur(10px);
+    }
+
+    header-top {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    header h1 {
+      font-size: 1.7rem;
+      margin-bottom: 2px;
+    }
+
+    header p {
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    .badge {
+      background: rgba(15, 23, 42, 0.9);
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 0.8rem;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      align-self: center;
+    }
+
+    /* Top banner ad */
+    .ad-banner {
+      margin-top: 10px;
+      border-radius: 14px;
+      border: 2px dashed rgba(148, 163, 184, 0.6);
+      background: radial-gradient(circle at top, #020617 0, #020617 70%);
+      padding: 10px;
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .ad-banner-title {
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    .ad-banner-size {
+      font-size: 0.78rem;
+      opacity: 0.9;
+      margin-bottom: 2px;
+    }
+
+    /* Main layout: side ads + game grid */
+    .content {
+      display: grid;
+      grid-template-columns: 220px minmax(0, 1fr) 220px;
+      gap: 14px;
+    }
+
+    @media (max-width: 960px) {
+      .content {
         grid-template-columns: minmax(0, 1fr);
       }
     }
@@ -51,37 +116,42 @@
       background: radial-gradient(circle at top, #111827 0, #020617 70%);
       border-radius: 18px;
       border: 1px solid rgba(148, 163, 184, 0.45);
-      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.6);
-      padding: 16px;
+      box-shadow: 0 14px 32px rgba(0, 0, 0, 0.6);
+      padding: 12px;
     }
 
-    .main {
+    .main-panel {
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 10px;
     }
 
-    header h1 {
-      font-size: 1.8rem;
-      margin-bottom: 4px;
+    .games-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
     }
 
-    header p {
-      font-size: 0.95rem;
+    .games-header h2 {
+      font-size: 1.1rem;
+    }
+
+    .games-header span {
+      font-size: 0.8rem;
       color: var(--muted);
     }
 
     .games-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 14px;
-      margin-top: 6px;
+      gap: 10px;
+      margin-top: 4px;
     }
 
     .game-card {
       background: linear-gradient(135deg, var(--card), #020617);
       border-radius: 16px;
-      padding: 14px 14px 12px;
+      padding: 12px 12px 10px;
       border: 1px solid rgba(148, 163, 184, 0.5);
       position: relative;
       overflow: hidden;
@@ -101,26 +171,35 @@
 
     .game-title {
       font-weight: 600;
-      margin-bottom: 4px;
+      margin-bottom: 2px;
+      font-size: 0.95rem;
     }
 
     .game-tag {
       display: inline-block;
       border-radius: 999px;
       padding: 2px 8px;
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       background: rgba(56, 189, 248, 0.16);
       border: 1px solid rgba(56, 189, 248, 0.4);
-      margin-bottom: 6px;
+      margin-bottom: 5px;
     }
 
     .game-desc {
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       color: var(--muted);
     }
 
+    .game-slot-number {
+      position: absolute;
+      right: 6px;
+      bottom: 6px;
+      font-size: 0.7rem;
+      color: rgba(148, 163, 184, 0.7);
+    }
+
     .coming-soon {
-      opacity: 0.7;
+      opacity: 0.8;
       cursor: default;
     }
 
@@ -132,13 +211,19 @@
     .coming-soon:hover {
       transform: none;
       box-shadow: none;
-      border-color: rgba(148, 163, 184, 0.45);
+      border-color: rgba(148, 163, 184, 0.5);
       background: linear-gradient(135deg, var(--card), #020617);
     }
 
-    /* Ad slots */
+    /* Side ad slots */
+    .ad-column {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
     .ad-slot {
-      height: 260px;
+      height: 180px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -148,19 +233,19 @@
       background: radial-gradient(circle at top, #020617 0, #020617 70%);
       color: var(--muted);
       text-align: center;
-      padding: 10px;
-      font-size: 0.85rem;
+      padding: 8px;
+      font-size: 0.82rem;
     }
 
     .ad-label {
       font-weight: 600;
-      margin-bottom: 4px;
+      margin-bottom: 2px;
     }
 
     .ad-size {
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       opacity: 0.9;
-      margin-bottom: 4px;
+      margin-bottom: 2px;
     }
 
     .ad-note {
@@ -168,8 +253,33 @@
       opacity: 0.8;
     }
 
+    /* Footer ad */
+    .footer-ad {
+      margin-top: 12px;
+      background: radial-gradient(circle at top, #111827 0, #020617 70%);
+      border-radius: 18px;
+      border: 1px dashed rgba(148, 163, 184, 0.6);
+      box-shadow: 0 12px 26px rgba(0, 0, 0, 0.7);
+      padding: 10px;
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .footer-ad-title {
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    .footer-ad-size {
+      font-size: 0.78rem;
+      opacity: 0.9;
+      margin-bottom: 2px;
+    }
+
     footer {
-      font-size: 0.8rem;
+      margin-top: 4px;
+      font-size: 0.78rem;
       color: var(--muted);
       text-align: right;
     }
@@ -177,66 +287,334 @@
 </head>
 <body>
   <div class="page">
-    <!-- Left ad -->
-    <aside class="panel">
-      <div class="ad-slot">
-        <div class="ad-label">Ad Space</div>
-        <div class="ad-size">300 × 250</div>
-        <div class="ad-note">Place your ad script or image here later.</div>
+    <header>
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px;">
+        <div>
+          <h1>Mini Games Arcade</h1>
+          <p>Pick a game from the list. More games and ads can be added anytime.</p>
+        </div>
+        <div class="badge">
+          30 game slots • static HTML
+        </div>
       </div>
-    </aside>
 
-    <!-- Main content -->
-    <main class="panel main">
-      <header>
-        <h1>Mini Games Arcade</h1>
-        <p>Select a game below. More games and ads can be added anytime.</p>
-      </header>
+      <div class="ad-banner">
+        <div class="ad-banner-title">Top Banner Ad Space</div>
+        <div class="ad-banner-size">Recommended: 728 × 90 or responsive</div>
+        <div>Paste your ad script or an image banner here.</div>
+      </div>
+    </header>
 
-      <section class="games-grid">
-        <!-- Game 1: Square Dodger -->
-        <a class="game-card" href="square-dodger.html">
-          <div class="game-tag">New</div>
-          <div class="game-title">Square Dodger</div>
-          <div class="game-desc">
-            Dodge falling blocks as long as you can. Simple controls, fast action.
-          </div>
-        </a>
+    <main class="content">
+      <!-- Left ad column -->
+      <aside class="panel ad-column">
+        <div class="ad-slot">
+          <div class="ad-label">Ad Slot #1</div>
+          <div class="ad-size">300 × 250</div>
+          <div class="ad-note">Side banner. Good for display or video ads.</div>
+        </div>
+        <div class="ad-slot">
+          <div class="ad-label">Ad Slot #2</div>
+          <div class="ad-size">300 × 600</div>
+          <div class="ad-note">Tall skyscraper ad. Great for CPM networks.</div>
+        </div>
+        <div class="ad-slot">
+          <div class="ad-label">Ad Slot #3</div>
+          <div class="ad-size">Flexible</div>
+          <div class="ad-note">Use for house ads or cross-promo.</div>
+        </div>
+      </aside>
 
-        <!-- Placeholder for future game 2 -->
-        <div class="game-card coming-soon">
-          <div class="game-tag">Coming soon</div>
-          <div class="game-title">Game Slot #2</div>
-          <div class="game-desc">
-            Add another HTML game here later. Just link this card to your new file.
-          </div>
+      <!-- Game list -->
+      <section class="panel main-panel">
+        <div class="games-header">
+          <h2>Games</h2>
+          <span>Slot 1 is live. Others ready for future games.</span>
         </div>
 
-        <!-- Placeholder for future game 3 -->
-        <div class="game-card coming-soon">
-          <div class="game-tag">Coming soon</div>
-          <div class="game-title">Game Slot #3</div>
-          <div class="game-desc">
-            More mini-games, experiments, or ads. This dashboard can scale easily.
+        <section class="games-grid">
+          <!-- Slot 1: linked game -->
+          <a class="game-card" href="square-dodger.html">
+            <div class="game-tag">Live</div>
+            <div class="game-title">Space Dodger</div>
+            <div class="game-desc">
+              Dodge and shoot enemy ships, collect power-ups, and chase a high score.
+            </div>
+            <div class="game-slot-number">Slot #1</div>
+          </a>
+
+          <!-- Slots 2–30: placeholders -->
+          <!-- You can change href to real game files later -->
+          <!-- Slot 2 -->
+          <div class="game-card coming-soon">
+            <div class="game-tag">Coming soon</div>
+            <div class="game-title">Game Slot #2</div>
+            <div class="game-desc">
+              Add another HTML game here and link this slot to it.
+            </div>
+            <div class="game-slot-number">Slot #2</div>
           </div>
+
+          <!-- Slot 3 -->
+          <div class="game-card coming-soon">
+            <div class="game-tag">Coming soon</div>
+            <div class="game-title">Game Slot #3</div>
+            <div class="game-desc">
+              Duplicate this card’s HTML and change the title/description.
+            </div>
+            <div class="game-slot-number">Slot #3</div>
+          </div>
+
+          <!-- Slots 4–30 -->
+          <!-- You can quickly edit these texts to name real games later -->
+          <!-- I'll just number them out for you -->
+          <!-- Slot 4 -->
+          <div class="game-card coming-soon">
+            <div class="game-tag">Coming soon</div>
+            <div class="game-title">Game Slot #4</div>
+            <div class="game-desc">Placeholder for a future mini game.</div>
+            <div class="game-slot-number">Slot #4</div>
+          </div>
+
+          <!-- Slot 5 -->
+          <div class="game-card coming-soon">
+            <div class="game-tag">Coming soon</div>
+            <div class="game-title">Game Slot #5</div>
+            <div class="game-desc">Placeholder for a future mini game.</div>
+            <div class="game-slot-number">Slot #5</div>
+          </div>
+
+          <!-- Slot 6 -->
+          <div class="game-card coming-soon">
+            <div class="game-tag">Coming soon</div>
+            <div class="game-title">Game Slot #6</div>
+            <div class="game-desc">Placeholder for a future mini game.</div>
+            <div class="game-slot-number">Slot #6</div>
+          </div>
+
+          <!-- Slot 7 -->
+          <div class="game-card coming-soon">
+            <div class="game-tag">Coming soon</div>
+            <div class="game-title">Game Slot #7</div>
+            <div class="game-desc">Placeholder for a future mini game.</div>
+            <div class="game-slot-number">Slot #7</div>
+          </div>
+
+          <!-- Slot 8 -->
+          <div class="game-card coming-soon">
+            <div class="game-tag">Coming soon</div>
+            <div class="game-title">Game Slot #8</div>
+            <div class="game-desc">Placeholder for a future mini game.</div>
+            <div class="game-slot-number">Slot #8</div>
+          </div>
+
+          <!-- Slot 9 -->
+          <div class="game-card coming-soon">
+            <div class="game-tag">Coming soon</div>
+            <div class="game-title">Game Slot #9</div>
+            <div class="game-desc">Placeholder for a future mini game.</div>
+            <div class="game-slot-number">Slot #9</div>
+          </div>
+
+          <!-- Slot 10 -->
+          <div class="game-card coming-soon">
+            <div class="game-tag">Coming soon</div>
+            <div class="game-title">Game Slot #10</div>
+            <div class="game-desc">Placeholder for a future mini game.</div>
+            <div class="game-slot-number">Slot #10</div>
+          </div>
+
+          <!-- Slot 11 -->
+          <div class="game-card coming-soon">
+            <div class="game-tag">Coming soon</div>
+            <div class="game-title">Game Slot #11</div>
+            <div class="game-desc">Placeholder for a future mini game.</div>
+            <div class="game-slot-number">Slot #11</div>
+          </div>
+
+          <!-- Slot 12 -->
+          <div class="game-card coming-soon">
+            <div class="game-tag">Coming soon</div>
+            <div class="game-title">Game Slot #12</div>
+            <div class="game-desc">Placeholder for a future mini game.</div>
+            <div class="game-slot-number">Slot #12</div>
+          </div>
+
+          <!-- Slot 13 -->
+          <div class="game-card coming-soon">
+            <div class="game-tag">Coming soon</div>
+            <div class="game-title">Game Slot #13</div>
+            <div class="game-desc">Placeholder for a future mini game.</div>
+            <div class="game-slot-number">Slot #13</div>
+          </div>
+
+          <!-- Slot 14 -->
+          <div class="game-card coming-soon">
+            <div class="game-tag">Coming soon</div>
+            <div class="game-title">Game Slot #14</div>
+            <div class="game-desc">Placeholder for a future mini game.</div>
+            <div class="game-slot-number">Slot #14</div>
+          </div>
+
+          <!-- Slot 15 -->
+          <div class="game-card coming-soon">
+            <div class="game-tag">Coming soon</div>
+            <div class="game-title">Game Slot #15</div>
+            <div class="game-desc">Placeholder for a future mini game.</div>
+            <div class="game-slot-number">Slot #15</div>
+          </div>
+
+          <!-- Slot 16 -->
+          <div class="game-card coming-soon">
+            <div class="game-tag">Coming soon</div>
+            <div class="game-title">Game Slot #16</div>
+            <div class="game-desc">Placeholder for a future mini game.</div>
+            <div class="game-slot-number">Slot #16</div>
+          </div>
+
+          <!-- Slot 17 -->
+          <div class="game-card coming-soon">
+            <div class="game-tag">Coming soon</div>
+            <div class="game-title">Game Slot #17</div>
+            <div class="game-desc">Placeholder for a future mini game.</div>
+            <div class="game-slot-number">Slot #17</div>
+          </div>
+
+          <!-- Slot 18 -->
+          <div class="game-card coming-soon">
+            <div class="game-tag">Coming soon</div>
+            <div class="game-title">Game Slot #18</div>
+            <div class="game-desc">Placeholder for a future mini game.</div>
+            <div class="game-slot-number">Slot #18</div>
+          </div>
+
+          <!-- Slot 19 -->
+          <div class="game-card coming-soon">
+            <div class="game-tag">Coming soon</div>
+            <div class="game-title">Game Slot #19</div>
+            <div class="game-desc">Placeholder for a future mini game.</div>
+            <div class="game-slot-number">Slot #19</div>
+          </div>
+
+          <!-- Slot 20 -->
+          <div class="game-card coming-soon">
+            <div class="game-tag">Coming soon</div>
+            <div class="game-title">Game Slot #20</div>
+            <div class="game-desc">Placeholder for a future mini game.</div>
+            <div class="game-slot-number">Slot #20</div>
+          </div>
+
+          <!-- Slot 21 -->
+          <div class="game-card coming-soon">
+            <div class="game-tag">Coming soon</div>
+            <div class="game-title">Game Slot #21</div>
+            <div class="game-desc">Placeholder for a future mini game.</div>
+            <div class="game-slot-number">Slot #21</div>
+          </div>
+
+          <!-- Slot 22 -->
+          <div class="game-card coming-soon">
+            <div class="game-tag">Coming soon</div>
+            <div class="game-title">Game Slot #22</div>
+            <div class="game-desc">Placeholder for a future mini game.</div>
+            <div class="game-slot-number">Slot #22</div>
+          </div>
+
+          <!-- Slot 23 -->
+          <div class="game-card coming-soon">
+            <div class="game-tag">Coming soon</div>
+            <div class="game-title">Game Slot #23</div>
+            <div class="game-desc">Placeholder for a future mini game.</div>
+            <div class="game-slot-number">Slot #23</div>
+          </div>
+
+          <!-- Slot 24 -->
+          <div class="game-card coming-soon">
+            <div class="game-tag">Coming soon</div>
+            <div class="game-title">Game Slot #24</div>
+            <div class="game-desc">Placeholder for a future mini game.</div>
+            <div class="game-slot-number">Slot #24</div>
+          </div>
+
+          <!-- Slot 25 -->
+          <div class="game-card coming-soon">
+            <div class="game-tag">Coming soon</div>
+            <div class="game-title">Game Slot #25</div>
+            <div class="game-desc">Placeholder for a future mini game.</div>
+            <div class="game-slot-number">Slot #25</div>
+          </div>
+
+          <!-- Slot 26 -->
+          <div class="game-card coming-soon">
+            <div class="game-tag">Coming soon</div>
+            <div class="game-title">Game Slot #26</div>
+            <div class="game-desc">Placeholder for a future mini game.</div>
+            <div class="game-slot-number">Slot #26</div>
+          </div>
+
+          <!-- Slot 27 -->
+          <div class="game-card coming-soon">
+            <div class="game-tag">Coming soon</div>
+            <div class="game-title">Game Slot #27</div>
+            <div class="game-desc">Placeholder for a future mini game.</div>
+            <div class="game-slot-number">Slot #27</div>
+          </div>
+
+          <!-- Slot 28 -->
+          <div class="game-card coming-soon">
+            <div class="game-tag">Coming soon</div>
+            <div class="game-title">Game Slot #28</div>
+            <div class="game-desc">Placeholder for a future mini game.</div>
+            <div class="game-slot-number">Slot #28</div>
+          </div>
+
+          <!-- Slot 29 -->
+          <div class="game-card coming-soon">
+            <div class="game-tag">Coming soon</div>
+            <div class="game-title">Game Slot #29</div>
+            <div class="game-desc">Placeholder for a future mini game.</div>
+            <div class="game-slot-number">Slot #29</div>
+          </div>
+
+          <!-- Slot 30 -->
+          <div class="game-card coming-soon">
+            <div class="game-tag">Coming soon</div>
+            <div class="game-title">Game Slot #30</div>
+            <div class="game-desc">Placeholder for a future mini game.</div>
+            <div class="game-slot-number">Slot #30</div>
+          </div>
+        </section>
+
+        <div class="footer-ad">
+          <div class="footer-ad-title">Bottom Ad Space</div>
+          <div class="footer-ad-size">Recommended: 728 × 90 or responsive</div>
+          <div>Use this for another banner ad or your own project promotion.</div>
         </div>
+
+        <footer>
+          Tip: point each slot to its own <code>.html</code> file as you add games.
+        </footer>
       </section>
 
-      <footer>
-        Tip: host each game as its own <code>.html</code> and link it from here.
-      </footer>
-    </main>
-
-    <!-- Right ad -->
-    <aside class="panel">
-      <div class="ad-slot">
-        <div class="ad-label">Ad Space</div>
-        <div class="ad-size">160 × 600</div>
-        <div class="ad-note">
-          Great for a tall banner. Replace with real ad code when you're ready.
+      <!-- Right ad column -->
+      <aside class="panel ad-column">
+        <div class="ad-slot">
+          <div class="ad-label">Ad Slot #4</div>
+          <div class="ad-size">160 × 600</div>
+          <div class="ad-note">Tall banner on the right side.</div>
         </div>
-      </div>
-    </aside>
+        <div class="ad-slot">
+          <div class="ad-label">Ad Slot #5</div>
+          <div class="ad-size">300 × 250</div>
+          <div class="ad-note">Use for contextual or in-house ads.</div>
+        </div>
+        <div class="ad-slot">
+          <div class="ad-label">Ad Slot #6</div>
+          <div class="ad-size">Flexible</div>
+          <div class="ad-note">Reserve for experiments or sponsors.</div>
+        </div>
+      </aside>
+    </main>
   </div>
 </body>
 </html>
