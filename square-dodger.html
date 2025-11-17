@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Square Dodger</title>
+  <title>Space Dodger</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     :root {
@@ -13,6 +13,9 @@
       --danger: #ef4444;
       --text: #e5e7eb;
       --muted: #9ca3af;
+      --power-shield: #22c55e;
+      --power-slow: #a855f7;
+      --power-blast: #facc15;
     }
 
     * {
@@ -25,7 +28,7 @@
 
     body {
       min-height: 100vh;
-      background: radial-gradient(circle at top, #1f2937 0, #020617 55%);
+      background: radial-gradient(circle at top, #020617 0, #000 70%);
       color: var(--text);
       display: flex;
       align-items: center;
@@ -56,11 +59,11 @@
       padding: 4px 10px;
       border-radius: 999px;
       border: 1px solid rgba(148, 163, 184, 0.4);
-      background: rgba(15, 23, 42, 0.8);
+      background: rgba(15, 23, 42, 0.9);
     }
 
     .back-link:hover {
-      border-color: rgba(56, 189, 248, 0.8);
+      border-color: rgba(56, 189, 248, 0.9);
       color: var(--text);
     }
 
@@ -96,7 +99,9 @@
       width: 480px;
       max-width: 100%;
       aspect-ratio: 3 / 4;
-      background: radial-gradient(circle at top, #1e293b 0, #020617 70%);
+      background:
+        radial-gradient(circle at top, #1e293b 0, #020617 65%),
+        radial-gradient(circle at bottom, rgba(148, 163, 184, 0.25) 0, #020617 55%);
       border-radius: 20px;
       overflow: hidden;
       box-shadow: 0 18px 45px rgba(0, 0, 0, 0.65);
@@ -126,18 +131,149 @@
       color: #facc15;
     }
 
-    .player {
+    #powerStatus {
       position: absolute;
-      background: linear-gradient(135deg, var(--accent), var(--accent-soft));
-      border-radius: 8px;
-      box-shadow: 0 0 12px rgba(56, 189, 248, 0.7);
+      bottom: 10px;
+      left: 10px;
+      right: 10px;
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      z-index: 10;
     }
 
+    .power-chip {
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--muted);
+      opacity: 0.4;
+    }
+
+    .power-chip.active {
+      opacity: 1;
+      color: #f9fafb;
+    }
+
+    .power-chip.shield.active {
+      border-color: var(--power-shield);
+      box-shadow: 0 0 8px rgba(34, 197, 94, 0.7);
+    }
+
+    .power-chip.slow.active {
+      border-color: var(--power-slow);
+      box-shadow: 0 0 8px rgba(168, 85, 247, 0.7);
+    }
+
+    .power-chip.blast.active {
+      border-color: var(--power-blast);
+      box-shadow: 0 0 8px rgba(250, 204, 21, 0.7);
+    }
+
+    /* Player ship */
+    .player {
+      position: absolute;
+      width: 50px; /* scaled in JS */
+      height: 30px;
+      transform-origin: center;
+    }
+
+    .player-body {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, var(--accent), var(--accent-soft));
+      clip-path: polygon(50% 0%, 100% 70%, 75% 100%, 25% 100%, 0 70%);
+      box-shadow: 0 0 18px rgba(56, 189, 248, 0.8);
+    }
+
+    .player-flame {
+      position: absolute;
+      width: 16px;
+      height: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: -10px;
+      background: radial-gradient(circle at top, #f97316 0, #ef4444 70%);
+      clip-path: polygon(50% 100%, 0 0, 100% 0);
+      opacity: 0.9;
+      animation: flame 0.25s infinite alternate;
+      filter: blur(0.3px);
+    }
+
+    @keyframes flame {
+      from { transform: translateX(-50%) scaleY(1); }
+      to { transform: translateX(-50%) scaleY(0.7); }
+    }
+
+    .player.shielded .player-body {
+      box-shadow: 0 0 22px rgba(34, 197, 94, 0.9);
+    }
+
+    .player.shielded::after {
+      content: "";
+      position: absolute;
+      inset: -6px;
+      border-radius: 999px;
+      border: 2px solid rgba(34, 197, 94, 0.7);
+      box-shadow: 0 0 20px rgba(34, 197, 94, 0.8);
+    }
+
+    /* Enemy ships */
     .enemy {
       position: absolute;
+      width: 40px;
+      height: 26px;
+    }
+
+    .enemy-body {
+      position: absolute;
+      inset: 0;
       background: linear-gradient(135deg, #f97316, var(--danger));
-      border-radius: 6px;
-      box-shadow: 0 0 10px rgba(239, 68, 68, 0.7);
+      clip-path: polygon(50% 0%, 100% 65%, 75% 100%, 25% 100%, 0 65%);
+      box-shadow: 0 0 14px rgba(239, 68, 68, 0.8);
+    }
+
+    .enemy-cockpit {
+      position: absolute;
+      width: 40%;
+      height: 45%;
+      left: 30%;
+      top: 20%;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #e0f2fe, #38bdf8);
+      box-shadow: 0 0 8px rgba(56, 189, 248, 0.8);
+    }
+
+    /* Power-ups */
+    .powerup {
+      position: absolute;
+      width: 26px;
+      height: 26px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #020617;
+      box-shadow: 0 0 12px rgba(148, 163, 184, 0.7);
+    }
+
+    .powerup.shield {
+      background: radial-gradient(circle at top, var(--power-shield), #15803d);
+      box-shadow: 0 0 12px rgba(34, 197, 94, 0.8);
+    }
+
+    .powerup.slow {
+      background: radial-gradient(circle at top, var(--power-slow), #6b21a8);
+      box-shadow: 0 0 12px rgba(168, 85, 247, 0.8);
+    }
+
+    .powerup.blast {
+      background: radial-gradient(circle at top, var(--power-blast), #ca8a04);
+      box-shadow: 0 0 12px rgba(250, 204, 21, 0.9);
     }
 
     .message {
@@ -222,8 +358,8 @@
       </a>
     </div>
 
-    <h1>Square Dodger</h1>
-    <p class="subtitle">Dodge the falling blocks for as long as you can.</p>
+    <h1>Space Dodger</h1>
+    <p class="subtitle">Pilot your ship and dodge enemy spacecraft. Grab power-ups to survive longer.</p>
 
     <div class="controls">
       <div>
@@ -241,13 +377,22 @@
         <span class="best">Best: <span id="bestScore">0</span></span>
       </div>
 
-      <div id="player" class="player"></div>
+      <div id="powerStatus">
+        <div id="chipShield" class="power-chip shield">🛡 Shield</div>
+        <div id="chipSlow" class="power-chip slow">🐢 Time Warp</div>
+        <div id="chipBlast" class="power-chip blast">💥 Nova</div>
+      </div>
+
+      <div id="player" class="player">
+        <div class="player-body"></div>
+        <div class="player-flame"></div>
+      </div>
 
       <div id="message" class="message">
-        <h2>Square Dodger</h2>
-        <p>Move to dodge the falling blocks. Survive to raise your score!</p>
-        <button id="startBtn">Play</button>
-        <div class="hint">Tip: The longer you survive, the faster things get.</div>
+        <h2>Space Dodger</h2>
+        <p>Dodge enemy ships and collect power-ups. Survive as long as you can!</p>
+        <button id="startBtn">Launch</button>
+        <div class="hint">Tip: Power-ups can save your life at high speed.</div>
       </div>
     </div>
   </div>
@@ -261,25 +406,42 @@
       const messageEl = document.getElementById("message");
       const startBtn = document.getElementById("startBtn");
 
+      const chipShield = document.getElementById("chipShield");
+      const chipSlow = document.getElementById("chipSlow");
+      const chipBlast = document.getElementById("chipBlast");
+
+      // Virtual game space
       const GAME_WIDTH = 480;
       const GAME_HEIGHT = 640;
 
+      // Player settings
       const PLAYER_WIDTH = 60;
-      const PLAYER_HEIGHT = 18;
-      const PLAYER_SPEED = 320;
+      const PLAYER_HEIGHT = 30;
+      const PLAYER_SPEED = 340;
 
-      const ENEMY_WIDTH = 40;
-      const ENEMY_HEIGHT = 20;
-      const BASE_ENEMY_SPEED = 140;
-      const BASE_SPAWN_INTERVAL = 1.0;
+      // Enemies
+      const ENEMY_WIDTH = 46;
+      const ENEMY_HEIGHT = 30;
+      const BASE_ENEMY_SPEED = 190;        // slightly faster start
+      const BASE_SPAWN_INTERVAL = 0.8;     // enemies appear a bit more often
+
+      // Power-ups
+      const POWERUP_SIZE = 26;
+      const POWERUP_SPEED = 110;
+      const POWERUP_MIN_INTERVAL = 6;   // seconds
+      const POWERUP_MAX_INTERVAL = 11;
+
+      const POWERUP_TYPES = ["shield", "slow", "blast"];
 
       let enemySpeed = BASE_ENEMY_SPEED;
       let spawnInterval = BASE_SPAWN_INTERVAL;
 
       let playerX = (GAME_WIDTH - PLAYER_WIDTH) / 2;
-      let playerY = GAME_HEIGHT - PLAYER_HEIGHT - 20;
+      let playerY = GAME_HEIGHT - PLAYER_HEIGHT - 24;
 
       let enemies = [];
+      let powerups = [];
+
       let lastTimestamp = 0;
       let spawnTimer = 0;
       let elapsedTime = 0;
@@ -289,9 +451,23 @@
       let leftPressed = false;
       let rightPressed = false;
 
-      const BEST_KEY = "squareDodgerBest";
+      // Power-up state
+      let shieldActive = false;
+      let shieldTimer = 0;
+
+      let slowActive = false;
+      let slowTimer = 0;
+
+      let nextPowerupTime = randomRange(POWERUP_MIN_INTERVAL, POWERUP_MAX_INTERVAL);
+      let timeSinceLastPowerup = 0;
+
+      const BEST_KEY = "spaceDodgerBest";
       let bestScore = Number(localStorage.getItem(BEST_KEY)) || 0;
       bestScoreEl.textContent = bestScore;
+
+      function randomRange(min, max) {
+        return min + Math.random() * (max - min);
+      }
 
       function getScale() {
         const rect = gameArea.getBoundingClientRect();
@@ -312,6 +488,10 @@
       function createEnemyElement(enemy) {
         const el = document.createElement("div");
         el.className = "enemy";
+        el.innerHTML = `
+          <div class="enemy-body"></div>
+          <div class="enemy-cockpit"></div>
+        `;
         enemy.el = el;
         gameArea.appendChild(el);
       }
@@ -319,9 +499,7 @@
       function renderEnemies() {
         const { scaleX, scaleY } = getScale();
         enemies.forEach((enemy) => {
-          if (!enemy.el) {
-            createEnemyElement(enemy);
-          }
+          if (!enemy.el) createEnemyElement(enemy);
           const el = enemy.el;
           el.style.width = ENEMY_WIDTH * scaleX + "px";
           el.style.height = ENEMY_HEIGHT * scaleY + "px";
@@ -330,14 +508,52 @@
         });
       }
 
+      function createPowerupElement(power) {
+        const el = document.createElement("div");
+        el.className = "powerup " + power.type;
+        el.textContent =
+          power.type === "shield"
+            ? "S"
+            : power.type === "slow"
+            ? "T"
+            : "N";
+        power.el = el;
+        gameArea.appendChild(el);
+      }
+
+      function renderPowerups() {
+        const { scaleX, scaleY } = getScale();
+        powerups.forEach((p) => {
+          if (!p.el) createPowerupElement(p);
+          const el = p.el;
+          el.style.width = POWERUP_SIZE * scaleX + "px";
+          el.style.height = POWERUP_SIZE * scaleY + "px";
+          el.style.left = p.x * scaleX + "px";
+          el.style.top = p.y * scaleY + "px";
+        });
+      }
+
       function spawnEnemy() {
-        const x =
-          Math.random() * (GAME_WIDTH - ENEMY_WIDTH);
+        const x = Math.random() * (GAME_WIDTH - ENEMY_WIDTH);
         enemies.push({
           x,
           y: -ENEMY_HEIGHT,
           width: ENEMY_WIDTH,
           height: ENEMY_HEIGHT,
+          el: null,
+        });
+      }
+
+      function spawnPowerup() {
+        const type =
+          POWERUP_TYPES[Math.floor(Math.random() * POWERUP_TYPES.length)];
+        const x = Math.random() * (GAME_WIDTH - POWERUP_SIZE);
+        powerups.push({
+          x,
+          y: -POWERUP_SIZE,
+          width: POWERUP_SIZE,
+          height: POWERUP_SIZE,
+          type,
           el: null,
         });
       }
@@ -352,44 +568,115 @@
       }
 
       function updateDifficulty(dt) {
-        const difficultyFactor = 1 + elapsedTime / 25;
-        enemySpeed = BASE_ENEMY_SPEED * difficultyFactor;
-        spawnInterval = BASE_SPAWN_INTERVAL / Math.min(difficultyFactor, 2.5);
+        const difficultyFactor = 1 + elapsedTime / 22; // ramps up faster over time
+        let slowFactor = slowActive ? 0.45 : 1;
+
+        enemySpeed = BASE_ENEMY_SPEED * difficultyFactor * slowFactor;
+        spawnInterval = BASE_SPAWN_INTERVAL / Math.min(difficultyFactor, 2.8);
+      }
+
+      function applyPowerup(power) {
+        if (power.type === "shield") {
+          shieldActive = true;
+          shieldTimer = 10; // seconds
+          playerEl.classList.add("shielded");
+          chipShield.classList.add("active");
+        } else if (power.type === "slow") {
+          slowActive = true;
+          slowTimer = 6;
+          chipSlow.classList.add("active");
+        } else if (power.type === "blast") {
+          // clear all enemies and add bonus points
+          enemies.forEach((e) => {
+            if (e.el && e.el.parentNode) e.el.parentNode.removeChild(e.el);
+          });
+          enemies = [];
+          score += 50;
+          chipBlast.classList.add("active");
+          // make blast chip glow only briefly
+          setTimeout(() => chipBlast.classList.remove("active"), 600);
+        }
+      }
+
+      function updatePowerTimers(dt) {
+        if (shieldActive) {
+          shieldTimer -= dt;
+          if (shieldTimer <= 0) {
+            shieldActive = false;
+            playerEl.classList.remove("shielded");
+            chipShield.classList.remove("active");
+          }
+        }
+        if (slowActive) {
+          slowTimer -= dt;
+          if (slowTimer <= 0) {
+            slowActive = false;
+            chipSlow.classList.remove("active");
+          }
+        }
       }
 
       function updateGame(dt) {
         if (!running) return;
 
         elapsedTime += dt;
-        score += dt * 10;
+        score += dt * 12; // slightly faster scoring
         scoreEl.textContent = Math.floor(score);
 
+        updatePowerTimers(dt);
         updateDifficulty(dt);
 
+        // Player movement
         let dir = 0;
         if (leftPressed) dir -= 1;
         if (rightPressed) dir += 1;
-
         playerX += dir * PLAYER_SPEED * dt;
         if (playerX < 0) playerX = 0;
         if (playerX > GAME_WIDTH - PLAYER_WIDTH) {
           playerX = GAME_WIDTH - PLAYER_WIDTH;
         }
 
+        // Spawn enemies
         spawnTimer += dt;
         if (spawnTimer >= spawnInterval) {
           spawnTimer = 0;
           spawnEnemy();
         }
 
+        // Spawn power-ups occasionally
+        timeSinceLastPowerup += dt;
+        if (timeSinceLastPowerup >= nextPowerupTime) {
+          timeSinceLastPowerup = 0;
+          nextPowerupTime = randomRange(POWERUP_MIN_INTERVAL, POWERUP_MAX_INTERVAL);
+          spawnPowerup();
+        }
+
+        // Move enemies
         enemies.forEach((enemy) => {
           enemy.y += enemySpeed * dt;
         });
 
+        // Move power-ups
+        powerups.forEach((p) => {
+          p.y += POWERUP_SPEED * dt;
+        });
+
+        // Remove off-screen enemies
         enemies = enemies.filter((enemy) => {
-          if (enemy.y > GAME_HEIGHT + 50) {
+          if (enemy.y > GAME_HEIGHT + 60) {
             if (enemy.el && enemy.el.parentNode) {
               enemy.el.parentNode.removeChild(enemy.el);
+            }
+            return false;
+          }
+          return true;
+        });
+
+        // Remove off-screen power-ups
+        powerups = powerups.filter((p) => {
+          if (p.y > GAME_HEIGHT + 40) {
+            if (p.el && p.el.parentNode) {
+              p.el.parentNode.removeChild(p.el);
             }
             return false;
           }
@@ -403,22 +690,50 @@
           height: PLAYER_HEIGHT,
         };
 
-        for (const enemy of enemies) {
-          const enemyRect = {
+        // Power-up collisions
+        powerups.forEach((p, idx) => {
+          const pRect = {
+            x: p.x,
+            y: p.y,
+            width: p.width,
+            height: p.height,
+          };
+          if (rectsOverlap(playerRect, pRect)) {
+            applyPowerup(p);
+            if (p.el && p.el.parentNode) p.el.parentNode.removeChild(p.el);
+            powerups.splice(idx, 1);
+          }
+        });
+
+        // Enemy collisions
+        for (let i = 0; i < enemies.length; i++) {
+          const enemy = enemies[i];
+          const eRect = {
             x: enemy.x,
             y: enemy.y,
             width: enemy.width,
             height: enemy.height,
           };
-
-          if (rectsOverlap(playerRect, enemyRect)) {
-            gameOver();
-            break;
+          if (rectsOverlap(playerRect, eRect)) {
+            if (shieldActive) {
+              // consume shield instead of dying
+              shieldActive = false;
+              playerEl.classList.remove("shielded");
+              chipShield.classList.remove("active");
+              if (enemy.el && enemy.el.parentNode)
+                enemy.el.parentNode.removeChild(enemy.el);
+              enemies.splice(i, 1);
+              break;
+            } else {
+              gameOver();
+              break;
+            }
           }
         }
 
         renderPlayer();
         renderEnemies();
+        renderPowerups();
       }
 
       function loop(timestamp) {
@@ -430,13 +745,19 @@
         requestAnimationFrame(loop);
       }
 
-      function startGame() {
+      function clearAllEntities() {
         enemies.forEach((e) => {
-          if (e.el && e.el.parentNode) {
-            e.el.parentNode.removeChild(e.el);
-          }
+          if (e.el && e.el.parentNode) e.el.parentNode.removeChild(e.el);
+        });
+        powerups.forEach((p) => {
+          if (p.el && p.el.parentNode) p.el.parentNode.removeChild(p.el);
         });
         enemies = [];
+        powerups = [];
+      }
+
+      function startGame() {
+        clearAllEntities();
 
         score = 0;
         elapsedTime = 0;
@@ -445,7 +766,17 @@
         spawnInterval = BASE_SPAWN_INTERVAL;
 
         playerX = (GAME_WIDTH - PLAYER_WIDTH) / 2;
-        playerY = GAME_HEIGHT - PLAYER_HEIGHT - 20;
+        playerY = GAME_HEIGHT - PLAYER_HEIGHT - 24;
+
+        timeSinceLastPowerup = 0;
+        nextPowerupTime = randomRange(POWERUP_MIN_INTERVAL, POWERUP_MAX_INTERVAL);
+
+        shieldActive = false;
+        slowActive = false;
+        playerEl.classList.remove("shielded");
+        chipShield.classList.remove("active");
+        chipSlow.classList.remove("active");
+        chipBlast.classList.remove("active");
 
         scoreEl.textContent = "0";
         messageEl.classList.add("hidden");
@@ -466,11 +797,12 @@
         messageEl.querySelector("p").textContent =
           "You scored " +
           finalScore +
-          " points. Press Play or Space to try again!";
+          " points. Press Launch or Space to try again!";
         startBtn.textContent = "Play again";
         messageEl.classList.remove("hidden");
       }
 
+      // Controls
       window.addEventListener("keydown", (e) => {
         if (e.code === "ArrowLeft" || e.code === "KeyA") {
           leftPressed = true;
@@ -478,9 +810,7 @@
           rightPressed = true;
         } else if (e.code === "Space") {
           e.preventDefault();
-          if (!running) {
-            startGame();
-          }
+          if (!running) startGame();
         }
       });
 
@@ -496,10 +826,8 @@
         const rect = gameArea.getBoundingClientRect();
         const x = event.clientX || (event.touches && event.touches[0].clientX);
         if (x == null) return;
-
         const relativeX = x - rect.left;
         const isLeft = relativeX < rect.width / 2;
-
         leftPressed = isLeft;
         rightPressed = !isLeft;
       }
@@ -514,10 +842,9 @@
       window.addEventListener("mouseup", stopPointer);
       window.addEventListener("touchend", stopPointer);
 
-      startBtn.addEventListener("click", () => {
-        startGame();
-      });
+      startBtn.addEventListener("click", startGame);
 
+      // Initial render & loop
       renderPlayer();
       requestAnimationFrame(loop);
     })();
