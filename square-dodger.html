@@ -26,14 +26,20 @@
         sans-serif;
     }
 
+    html,
     body {
-      min-height: 100vh;
+      height: 100%;
+    }
+
+    body {
+      height: 100vh;
+      overflow: hidden; /* prevent scrolling */
       background: radial-gradient(circle at top, #020617 0, #000 70%);
       color: var(--text);
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 24px;
+      padding: 12px;
     }
 
     .wrapper {
@@ -46,17 +52,17 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
 
     .back-link {
       text-decoration: none;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       color: var(--muted);
       display: inline-flex;
       align-items: center;
       gap: 4px;
-      padding: 4px 10px;
+      padding: 3px 9px;
       border-radius: 999px;
       border: 1px solid rgba(148, 163, 184, 0.4);
       background: rgba(15, 23, 42, 0.9);
@@ -68,28 +74,28 @@
     }
 
     h1 {
-      font-size: 1.9rem;
-      margin-bottom: 0.5rem;
+      font-size: 1.6rem;
+      margin-bottom: 2px;
     }
 
     .subtitle {
-      font-size: 0.95rem;
+      font-size: 0.85rem;
       color: var(--muted);
-      margin-bottom: 1.2rem;
+      margin-bottom: 8px;
     }
 
     .controls {
-      font-size: 0.9rem;
+      font-size: 0.8rem;
       color: var(--muted);
-      margin-bottom: 0.75rem;
+      margin-bottom: 8px;
     }
 
     .controls span {
       display: inline-block;
       background: rgba(15, 23, 42, 0.85);
       border-radius: 999px;
-      padding: 4px 10px;
-      margin: 2px;
+      padding: 3px 8px;
+      margin: 1px;
       border: 1px solid rgba(148, 163, 184, 0.35);
     }
 
@@ -111,18 +117,18 @@
 
     #hud {
       position: absolute;
-      top: 10px;
-      left: 10px;
-      right: 10px;
+      top: 8px;
+      left: 8px;
+      right: 8px;
       display: flex;
       justify-content: space-between;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       z-index: 10;
     }
 
     #hud span {
       background: rgba(15, 23, 42, 0.9);
-      padding: 4px 10px;
+      padding: 3px 9px;
       border-radius: 999px;
       border: 1px solid rgba(148, 163, 184, 0.35);
     }
@@ -133,18 +139,18 @@
 
     #powerStatus {
       position: absolute;
-      bottom: 10px;
-      left: 10px;
-      right: 10px;
+      bottom: 8px;
+      left: 8px;
+      right: 8px;
       display: flex;
       justify-content: center;
-      gap: 6px;
-      font-size: 0.8rem;
+      gap: 4px;
+      font-size: 0.75rem;
       z-index: 10;
     }
 
     .power-chip {
-      padding: 3px 8px;
+      padding: 3px 7px;
       border-radius: 999px;
       border: 1px solid rgba(148, 163, 184, 0.4);
       background: rgba(15, 23, 42, 0.9);
@@ -175,7 +181,7 @@
     /* Player ship */
     .player {
       position: absolute;
-      width: 50px; /* scaled in JS */
+      width: 50px;
       height: 30px;
       transform-origin: center;
     }
@@ -276,6 +282,16 @@
       box-shadow: 0 0 12px rgba(250, 204, 21, 0.9);
     }
 
+    /* Bullets */
+    .bullet {
+      position: absolute;
+      width: 6px;
+      height: 18px;
+      background: linear-gradient(180deg, #e0f2fe, #38bdf8);
+      border-radius: 999px;
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.9);
+    }
+
     .message {
       position: absolute;
       inset: 0;
@@ -283,10 +299,10 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      background: radial-gradient(circle at top, rgba(15, 23, 42, 0.7), rgba(15, 23, 42, 0.95));
+      background: radial-gradient(circle at top, rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.96));
       color: var(--text);
       text-align: center;
-      padding: 20px;
+      padding: 16px;
       z-index: 20;
     }
 
@@ -295,57 +311,55 @@
     }
 
     .message h2 {
-      font-size: 1.6rem;
-      margin-bottom: 0.4rem;
+      font-size: 1.4rem;
+      margin-bottom: 4px;
     }
 
     .message p {
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       color: var(--muted);
-      margin-bottom: 0.9rem;
+      margin-bottom: 8px;
     }
 
     .message button {
       border: none;
       outline: none;
-      padding: 8px 18px;
+      padding: 7px 16px;
       border-radius: 999px;
       background: linear-gradient(135deg, var(--accent), var(--accent-soft));
       color: white;
       cursor: pointer;
       font-weight: 600;
-      font-size: 0.95rem;
-      box-shadow: 0 10px 20px rgba(37, 99, 235, 0.35);
+      font-size: 0.9rem;
+      box-shadow: 0 8px 18px rgba(37, 99, 235, 0.35);
       transition: transform 0.1s ease, box-shadow 0.1s ease;
     }
 
     .message button:hover {
       transform: translateY(-1px);
-      box-shadow: 0 14px 26px rgba(37, 99, 235, 0.5);
+      box-shadow: 0 12px 22px rgba(37, 99, 235, 0.5);
     }
 
     .message button:active {
       transform: translateY(0);
-      box-shadow: 0 8px 16px rgba(37, 99, 235, 0.4);
+      box-shadow: 0 6px 14px rgba(37, 99, 235, 0.4);
     }
 
     .hint {
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       color: var(--muted);
-      margin-top: 0.8rem;
+      margin-top: 6px;
     }
 
     @media (max-width: 480px) {
       h1 {
-        font-size: 1.5rem;
+        font-size: 1.4rem;
       }
-
       .subtitle {
-        font-size: 0.85rem;
-      }
-
-      .controls span {
         font-size: 0.8rem;
+      }
+      .controls span {
+        font-size: 0.75rem;
       }
     }
   </style>
@@ -359,16 +373,13 @@
     </div>
 
     <h1>Space Dodger</h1>
-    <p class="subtitle">Pilot your ship and dodge enemy spacecraft. Grab power-ups to survive longer.</p>
+    <p class="subtitle">Dodge and shoot enemy ships. Grab power-ups to survive.</p>
 
     <div class="controls">
-      <div>
-        <span>Keyboard: ← / → or A / D</span>
-        <span>Restart: Space</span>
-      </div>
-      <div>
-        <span>Mobile: Tap left / right side of the game</span>
-      </div>
+      <span>Move: ← / → or A / D</span>
+      <span>Shoot: Space / ↑ / W</span>
+      <span>Start/Restart: Space</span>
+      <span>Mobile: Tap left/right to move</span>
     </div>
 
     <div id="gameArea">
@@ -390,9 +401,9 @@
 
       <div id="message" class="message">
         <h2>Space Dodger</h2>
-        <p>Dodge enemy ships and collect power-ups. Survive as long as you can!</p>
+        <p>Dodge enemy ships, shoot them down, and collect power-ups.</p>
         <button id="startBtn">Launch</button>
-        <div class="hint">Tip: Power-ups can save your life at high speed.</div>
+        <div class="hint">Tip: Use power-ups when the screen gets crowded.</div>
       </div>
     </div>
   </div>
@@ -419,18 +430,23 @@
       const PLAYER_HEIGHT = 30;
       const PLAYER_SPEED = 340;
 
-      // Enemies
+      // Enemy settings
       const ENEMY_WIDTH = 46;
       const ENEMY_HEIGHT = 30;
-      const BASE_ENEMY_SPEED = 190;        // slightly faster start
-      const BASE_SPAWN_INTERVAL = 0.8;     // enemies appear a bit more often
+      const BASE_ENEMY_SPEED = 190;
+      const BASE_SPAWN_INTERVAL = 0.8;
+
+      // Bullet settings
+      const BULLET_WIDTH = 6;
+      const BULLET_HEIGHT = 18;
+      const BULLET_SPEED = 430;
+      const FIRE_COOLDOWN = 0.25; // seconds
 
       // Power-ups
       const POWERUP_SIZE = 26;
       const POWERUP_SPEED = 110;
-      const POWERUP_MIN_INTERVAL = 6;   // seconds
+      const POWERUP_MIN_INTERVAL = 6;
       const POWERUP_MAX_INTERVAL = 11;
-
       const POWERUP_TYPES = ["shield", "slow", "blast"];
 
       let enemySpeed = BASE_ENEMY_SPEED;
@@ -440,6 +456,7 @@
       let playerY = GAME_HEIGHT - PLAYER_HEIGHT - 24;
 
       let enemies = [];
+      let bullets = [];
       let powerups = [];
 
       let lastTimestamp = 0;
@@ -450,6 +467,8 @@
 
       let leftPressed = false;
       let rightPressed = false;
+      let shootPressed = false;
+      let fireCooldownTimer = 0;
 
       // Power-up state
       let shieldActive = false;
@@ -533,6 +552,25 @@
         });
       }
 
+      function createBulletElement(bullet) {
+        const el = document.createElement("div");
+        el.className = "bullet";
+        bullet.el = el;
+        gameArea.appendChild(el);
+      }
+
+      function renderBullets() {
+        const { scaleX, scaleY } = getScale();
+        bullets.forEach((b) => {
+          if (!b.el) createBulletElement(b);
+          const el = b.el;
+          el.style.width = BULLET_WIDTH * scaleX + "px";
+          el.style.height = BULLET_HEIGHT * scaleY + "px";
+          el.style.left = b.x * scaleX + "px";
+          el.style.top = b.y * scaleY + "px";
+        });
+      }
+
       function spawnEnemy() {
         const x = Math.random() * (GAME_WIDTH - ENEMY_WIDTH);
         enemies.push({
@@ -558,6 +596,24 @@
         });
       }
 
+      function fireBullet() {
+        if (!running) return;
+        if (fireCooldownTimer > 0) return;
+
+        const bulletX = playerX + PLAYER_WIDTH / 2 - BULLET_WIDTH / 2;
+        const bulletY = playerY - BULLET_HEIGHT + 4;
+
+        bullets.push({
+          x: bulletX,
+          y: bulletY,
+          width: BULLET_WIDTH,
+          height: BULLET_HEIGHT,
+          el: null,
+        });
+
+        fireCooldownTimer = FIRE_COOLDOWN;
+      }
+
       function rectsOverlap(a, b) {
         return !(
           a.x + a.width < b.x ||
@@ -568,9 +624,8 @@
       }
 
       function updateDifficulty(dt) {
-        const difficultyFactor = 1 + elapsedTime / 22; // ramps up faster over time
+        const difficultyFactor = 1 + elapsedTime / 22;
         let slowFactor = slowActive ? 0.45 : 1;
-
         enemySpeed = BASE_ENEMY_SPEED * difficultyFactor * slowFactor;
         spawnInterval = BASE_SPAWN_INTERVAL / Math.min(difficultyFactor, 2.8);
       }
@@ -578,7 +633,7 @@
       function applyPowerup(power) {
         if (power.type === "shield") {
           shieldActive = true;
-          shieldTimer = 10; // seconds
+          shieldTimer = 10;
           playerEl.classList.add("shielded");
           chipShield.classList.add("active");
         } else if (power.type === "slow") {
@@ -586,14 +641,12 @@
           slowTimer = 6;
           chipSlow.classList.add("active");
         } else if (power.type === "blast") {
-          // clear all enemies and add bonus points
           enemies.forEach((e) => {
             if (e.el && e.el.parentNode) e.el.parentNode.removeChild(e.el);
           });
           enemies = [];
           score += 50;
           chipBlast.classList.add("active");
-          // make blast chip glow only briefly
           setTimeout(() => chipBlast.classList.remove("active"), 600);
         }
       }
@@ -620,9 +673,10 @@
         if (!running) return;
 
         elapsedTime += dt;
-        score += dt * 12; // slightly faster scoring
+        score += dt * 12;
         scoreEl.textContent = Math.floor(score);
 
+        if (fireCooldownTimer > 0) fireCooldownTimer -= dt;
         updatePowerTimers(dt);
         updateDifficulty(dt);
 
@@ -636,6 +690,9 @@
           playerX = GAME_WIDTH - PLAYER_WIDTH;
         }
 
+        // Auto-fire when shoot key held
+        if (shootPressed) fireBullet();
+
         // Spawn enemies
         spawnTimer += dt;
         if (spawnTimer >= spawnInterval) {
@@ -643,11 +700,14 @@
           spawnEnemy();
         }
 
-        // Spawn power-ups occasionally
+        // Spawn power-ups
         timeSinceLastPowerup += dt;
         if (timeSinceLastPowerup >= nextPowerupTime) {
           timeSinceLastPowerup = 0;
-          nextPowerupTime = randomRange(POWERUP_MIN_INTERVAL, POWERUP_MAX_INTERVAL);
+          nextPowerupTime = randomRange(
+            POWERUP_MIN_INTERVAL,
+            POWERUP_MAX_INTERVAL
+          );
           spawnPowerup();
         }
 
@@ -659,6 +719,11 @@
         // Move power-ups
         powerups.forEach((p) => {
           p.y += POWERUP_SPEED * dt;
+        });
+
+        // Move bullets
+        bullets.forEach((b) => {
+          b.y -= BULLET_SPEED * dt;
         });
 
         // Remove off-screen enemies
@@ -678,6 +743,15 @@
             if (p.el && p.el.parentNode) {
               p.el.parentNode.removeChild(p.el);
             }
+            return false;
+          }
+          return true;
+        });
+
+        // Remove off-screen bullets
+        bullets = bullets.filter((b) => {
+          if (b.y < -40) {
+            if (b.el && b.el.parentNode) b.el.parentNode.removeChild(b.el);
             return false;
           }
           return true;
@@ -705,7 +779,41 @@
           }
         });
 
-        // Enemy collisions
+        // Bullet vs enemy collisions
+        for (let i = enemies.length - 1; i >= 0; i--) {
+          const enemy = enemies[i];
+          const eRect = {
+            x: enemy.x,
+            y: enemy.y,
+            width: enemy.width,
+            height: enemy.height,
+          };
+
+          for (let j = bullets.length - 1; j >= 0; j--) {
+            const b = bullets[j];
+            const bRect = {
+              x: b.x,
+              y: b.y,
+              width: b.width,
+              height: b.height,
+            };
+            if (rectsOverlap(eRect, bRect)) {
+              // Destroy both
+              if (enemy.el && enemy.el.parentNode)
+                enemy.el.parentNode.removeChild(enemy.el);
+              enemies.splice(i, 1);
+
+              if (b.el && b.el.parentNode)
+                b.el.parentNode.removeChild(b.el);
+              bullets.splice(j, 1);
+
+              score += 8; // bonus for shooting
+              break;
+            }
+          }
+        }
+
+        // Enemy vs player collisions
         for (let i = 0; i < enemies.length; i++) {
           const enemy = enemies[i];
           const eRect = {
@@ -716,7 +824,6 @@
           };
           if (rectsOverlap(playerRect, eRect)) {
             if (shieldActive) {
-              // consume shield instead of dying
               shieldActive = false;
               playerEl.classList.remove("shielded");
               chipShield.classList.remove("active");
@@ -734,13 +841,13 @@
         renderPlayer();
         renderEnemies();
         renderPowerups();
+        renderBullets();
       }
 
       function loop(timestamp) {
         if (!lastTimestamp) lastTimestamp = timestamp;
         const dt = (timestamp - lastTimestamp) / 1000;
         lastTimestamp = timestamp;
-
         updateGame(dt);
         requestAnimationFrame(loop);
       }
@@ -752,8 +859,12 @@
         powerups.forEach((p) => {
           if (p.el && p.el.parentNode) p.el.parentNode.removeChild(p.el);
         });
+        bullets.forEach((b) => {
+          if (b.el && b.el.parentNode) b.el.parentNode.removeChild(b.el);
+        });
         enemies = [];
         powerups = [];
+        bullets = [];
       }
 
       function startGame() {
@@ -778,6 +889,8 @@
         chipSlow.classList.remove("active");
         chipBlast.classList.remove("active");
 
+        fireCooldownTimer = 0;
+
         scoreEl.textContent = "0";
         messageEl.classList.add("hidden");
         running = true;
@@ -797,7 +910,7 @@
         messageEl.querySelector("p").textContent =
           "You scored " +
           finalScore +
-          " points. Press Launch or Space to try again!";
+          " points. Press Launch or Space to play again!";
         startBtn.textContent = "Play again";
         messageEl.classList.remove("hidden");
       }
@@ -808,9 +921,18 @@
           leftPressed = true;
         } else if (e.code === "ArrowRight" || e.code === "KeyD") {
           rightPressed = true;
-        } else if (e.code === "Space") {
+        } else if (
+          e.code === "Space" ||
+          e.code === "ArrowUp" ||
+          e.code === "KeyW"
+        ) {
           e.preventDefault();
-          if (!running) startGame();
+          if (!running) {
+            startGame();
+          } else {
+            shootPressed = true;
+            fireBullet();
+          }
         }
       });
 
@@ -819,9 +941,16 @@
           leftPressed = false;
         } else if (e.code === "ArrowRight" || e.code === "KeyD") {
           rightPressed = false;
+        } else if (
+          e.code === "Space" ||
+          e.code === "ArrowUp" ||
+          e.code === "KeyW"
+        ) {
+          shootPressed = false;
         }
       });
 
+      // Mobile/touch: tap left/right to move
       function handlePointer(event) {
         const rect = gameArea.getBoundingClientRect();
         const x = event.clientX || (event.touches && event.touches[0].clientX);
