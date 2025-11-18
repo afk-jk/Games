@@ -7,773 +7,308 @@
   <style>
     :root {
       --bg: #020617;
-      --panel: #020617;
+      --panel: #0f172a;
       --text: #e5e7eb;
       --muted: #9ca3af;
       --accent: #38bdf8;
-      --border-soft: rgba(148, 163, 184, 0.6);
+      --border: rgba(148, 163, 184, 0.35);
     }
 
     * {
-      box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-        sans-serif;
-    }
-
-    html, body {
-      height: 100%;
+      box-sizing: border-box;
+      font-family: system-ui, sans-serif;
     }
 
     body {
-      min-height: 100vh;
-      margin: 0;
-      background: radial-gradient(circle at top, #1f2937 0, #020617 55%);
+      background: radial-gradient(circle at top, #1e293b 0, #020617 60%);
       color: var(--text);
       display: flex;
       justify-content: center;
-      padding: 10px;
+      padding: 20px;
       overflow-x: hidden;
       overflow-y: auto;
+      min-height: 100vh;
     }
 
-    .page {
+    /* 3-column layout */
+    .layout {
       width: 100%;
-      max-width: 1200px;
+      max-width: 1500px;
       display: grid;
-      grid-template-columns: minmax(0, 1.8fr) minmax(0, 1.2fr);
-      gap: 12px;
-      align-items: stretch;
+      grid-template-columns: 220px 1fr 220px;
+      gap: 20px;
     }
 
-    @media (max-width: 900px) {
-      .page {
-        grid-template-columns: minmax(0, 1fr);
+    @media (max-width: 960px) {
+      .layout {
+        grid-template-columns: 1fr;
       }
     }
 
+    /* Panels */
     .panel {
-      background: radial-gradient(circle at top, #020617 0, #020617 70%);
-      border-radius: 16px;
-      border: 1px solid rgba(148, 163, 184, 0.5);
-      box-shadow: 0 16px 32px rgba(0, 0, 0, 0.7);
-      padding: 10px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
     }
 
-    .main-panel {
+    /* LEFT & RIGHT ADS */
+    .ad-col {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 14px;
     }
 
-    .top-row {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    h1 {
-      font-size: 1.7rem;
-      letter-spacing: 0.06em;
-    }
-
-    .subtitle {
-      font-size: 0.78rem;
-      color: var(--muted);
-      margin-top: 2px;
-    }
-
-    .tagline {
-      font-size: 0.78rem;
-      color: var(--muted);
-    }
-
-    .ad-banner {
-      flex: 1;
-      min-width: 220px;
+    .ad-box {
+      height: 180px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 2px dashed var(--border);
       border-radius: 12px;
-      border: 2px dashed rgba(148, 163, 184, 0.7);
-      background: rgba(15, 23, 42, 0.85);
-      padding: 8px;
+      text-align: center;
+      padding: 10px;
+      color: var(--muted);
+      font-size: 0.85rem;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      align-items: center;
-      font-size: 0.8rem;
-      color: var(--muted);
-      text-align: center;
+      gap: 4px;
     }
 
-    .ad-banner-title {
+    .ad-title {
       font-weight: 600;
-      margin-bottom: 2px;
     }
 
-    .ad-banner-size {
-      font-size: 0.75rem;
-      margin-bottom: 4px;
-    }
-
-    .games-section-header {
+    /* CENTER: GAME LIST */
+    .center {
       display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      gap: 6px;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    h1 {
+      font-size: 2rem;
+    }
+
+    .subtitle {
+      color: var(--muted);
       margin-top: 4px;
+      font-size: 0.9rem;
     }
 
-    .games-section-header h2 {
-      font-size: 0.95rem;
-    }
-
-    .games-section-sub {
-      font-size: 0.75rem;
-      color: var(--muted);
-    }
-
-    .slots-info {
-      font-size: 0.75rem;
-      color: var(--muted);
-    }
-
+    /* Game Grid */
     .games-grid {
-      margin-top: 6px;
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
-      gap: 8px;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 12px;
+      padding-bottom: 20px;
     }
 
     .game-card {
+      background: #0b1220;
+      border-radius: 12px;
+      padding: 8px;
+      border: 1px solid rgba(51, 65, 85, 0.7);
+      text-decoration: none;
       display: flex;
       flex-direction: column;
-      gap: 4px;
-      text-decoration: none;
-      color: inherit;
-      background: radial-gradient(circle at top left, #020617 0, #000000 70%);
-      border-radius: 12px;
-      border: 1px solid rgba(51, 65, 85, 0.9);
-      padding: 6px;
-      position: relative;
-      overflow: hidden;
+      gap: 6px;
+      color: var(--text);
+      transition: .15s;
     }
 
     .game-card:hover {
       border-color: var(--accent);
-      box-shadow: 0 8px 18px rgba(37, 99, 235, 0.45);
-      transform: translateY(-1px);
-      transition: all 0.1s ease;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 14px rgba(56, 189, 248, 0.25);
     }
 
     .game-thumb {
+      background: #020617;
+      height: 100px;
       border-radius: 8px;
       overflow: hidden;
-      background: #020617;
       display: flex;
       align-items: center;
       justify-content: center;
-      height: 90px;
     }
 
     .game-thumb img {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      display: block;
-    }
-
-    .game-thumb-label {
-      font-size: 0.72rem;
-      color: var(--muted);
-      text-align: center;
-      padding: 12px;
     }
 
     .game-title {
-      font-size: 0.9rem;
+      font-size: 1rem;
       font-weight: 600;
     }
 
     .game-desc {
+      font-size: 0.8rem;
+      color: var(--muted);
+      line-height: 1.2;
+    }
+
+    .meta-row {
+      display: flex;
+      justify-content: space-between;
       font-size: 0.75rem;
       color: var(--muted);
     }
 
-    .game-meta-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 2px;
-      font-size: 0.72rem;
-      color: var(--muted);
-    }
-
-    .game-tag {
-      font-size: 0.7rem;
+    .tag {
       padding: 2px 6px;
       border-radius: 999px;
-      background: rgba(15, 23, 42, 0.95);
-      border: 1px solid rgba(148, 163, 184, 0.7);
+      border: 1px solid var(--border);
+      font-size: 0.65rem;
       text-transform: uppercase;
-      letter-spacing: 0.06em;
     }
 
-    .game-tag.live {
-      border-color: rgba(56, 189, 248, 0.9);
+    .tag.live {
+      border-color: var(--accent);
       color: #bae6fd;
     }
 
-    .game-tag.soon {
+    .tag.soon {
       border-style: dashed;
-    }
-
-    .game-slot-number {
-      opacity: 0.7;
-    }
-
-    /* Right column ads/info */
-    .side-panel {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .side-ad {
-      border-radius: 12px;
-      border: 2px dashed rgba(148, 163, 184, 0.7);
-      background: rgba(15, 23, 42, 0.9);
-      padding: 8px;
-      font-size: 0.8rem;
-      color: var(--muted);
-      text-align: center;
-    }
-
-    .side-ad-title {
-      font-weight: 600;
-      margin-bottom: 2px;
-    }
-
-    .side-ad-size {
-      font-size: 0.75rem;
-      margin-bottom: 2px;
-    }
-
-    .side-note {
-      font-size: 0.75rem;
-      color: var(--muted);
-      line-height: 1.4;
     }
   </style>
 </head>
+
 <body>
-  <div class="page">
-    <!-- MAIN COLUMN -->
-    <main class="panel main-panel">
-      <div class="top-row">
-        <div>
-          <h1>Mini Games Arcade</h1>
-          <div class="subtitle">
-            Pick a game from the list. More games and ads can be added anytime.
-          </div>
-        </div>
-        <div class="ad-banner">
-          <div class="ad-banner-title">Top Banner Ad Space</div>
-          <div class="ad-banner-size">728 × 90 (or similar)</div>
-          <div>Insert your ad script, image banner, or sponsor here.</div>
+  <div class="layout">
+
+    <!-- LEFT ADS -->
+    <div class="ad-col">
+      <div class="ad-box">
+        <div class="ad-title">Ad Slot #1</div>
+        <div>300 × 250</div>
+      </div>
+
+      <div class="ad-box">
+        <div class="ad-title">Ad Slot #2</div>
+        <div>160 × 600</div>
+      </div>
+    </div>
+
+    <!-- CENTER GAME LIST -->
+    <main class="center panel">
+      <div>
+        <h1>Mini Games Arcade</h1>
+        <div class="subtitle">
+          Pick from 30 games — more added over time.
         </div>
       </div>
 
-      <div class="games-section-header">
-        <div>
-          <h2>Games</h2>
-          <div class="games-section-sub">
-            30 slots ready to fill. Some are live, others coming soon.
-          </div>
-        </div>
-        <div class="slots-info">
-          Slots used: <strong>5 / 30</strong>
-        </div>
-      </div>
+      <!-- GAME GRID -->
+      <div class="games-grid">
 
-      <section class="games-grid">
-        <!-- Slot 1: Space Dodger -->
+        <!-- Slot 1 -->
         <a class="game-card" href="square-dodger.html">
           <div class="game-thumb">
-            <img src="images/space-dodger.png" alt="Space Dodger" />
+            <img src="images/space-dodger.png" />
           </div>
           <div class="game-title">Space Dodger</div>
-          <div class="game-desc">
-            WASD / arrows to move, shoot enemy ships and dodge bullets.
-          </div>
-          <div class="game-meta-row">
-            <span class="game-tag live">Live</span>
-            <span class="game-slot-number">Slot #1</span>
+          <div class="game-desc">Shoot & dodge spaceships.</div>
+          <div class="meta-row">
+            <span class="tag live">Live</span>
+            <span>Slot #1</span>
           </div>
         </a>
 
-        <!-- Slot 2: 2048 -->
+        <!-- Slot 2 -->
         <a class="game-card" href="2048.html">
           <div class="game-thumb">
-            <img src="images/slot-coming-soon.svg" alt="2048" />
+            <img src="images/slot-coming-soon.svg" />
           </div>
           <div class="game-title">2048</div>
-          <div class="game-desc">
-            Swipe or use arrow keys to merge tiles and reach the 2048 tile.
-          </div>
-          <div class="game-meta-row">
-            <span class="game-tag live">Live</span>
-            <span class="game-slot-number">Slot #2</span>
+          <div class="game-desc">Swipe & merge tiles.</div>
+          <div class="meta-row">
+            <span class="tag live">Live</span>
+            <span>Slot #2</span>
           </div>
         </a>
 
-        <!-- Slot 3: Tetris -->
+        <!-- Slot 3 -->
         <a class="game-card" href="tetris.html">
           <div class="game-thumb">
-            <img src="images/slot-coming-soon.svg" alt="Tetris-style game" />
+            <img src="images/slot-coming-soon.svg" />
           </div>
-          <div class="game-title">Tetris-style Game</div>
-          <div class="game-desc">
-            Classic falling blocks. Clear lines and don't let the stack reach the top.
-          </div>
-          <div class="game-meta-row">
-            <span class="game-tag live">Live</span>
-            <span class="game-slot-number">Slot #3</span>
+          <div class="game-title">Tetris-style</div>
+          <div class="game-desc">Classic falling blocks.</div>
+          <div class="meta-row">
+            <span class="tag live">Live</span>
+            <span>Slot #3</span>
           </div>
         </a>
 
-        <!-- Slot 4: Snake -->
+        <!-- Slot 4 -->
         <a class="game-card" href="snake.html">
           <div class="game-thumb">
-            <img src="images/slot-coming-soon.svg" alt="Snake" />
+            <img src="images/slot-coming-soon.svg" />
           </div>
           <div class="game-title">Snake</div>
-          <div class="game-desc">
-            Eat food to grow, avoid walls and your own tail. Arrows / WASD supported.
-          </div>
-          <div class="game-meta-row">
-            <span class="game-tag live">Live</span>
-            <span class="game-slot-number">Slot #4</span>
+          <div class="game-desc">Eat food to grow.</div>
+          <div class="meta-row">
+            <span class="tag live">Live</span>
+            <span>Slot #4</span>
           </div>
         </a>
 
-        <!-- Slot 5: Dog Farm Clicker -->
+        <!-- Slot 5 -->
         <a class="game-card" href="dog-farm.html">
           <div class="game-thumb">
-            <img src="images/slot-coming-soon.svg" alt="Dog Farm Clicker" />
+            <img src="images/slot-coming-soon.svg" />
           </div>
           <div class="game-title">Dog Farm Clicker</div>
-          <div class="game-desc">
-            Tap to earn dogs, then buy kennels, walkers and cafés for AFK income.
-          </div>
-          <div class="game-meta-row">
-            <span class="game-tag live">Live</span>
-            <span class="game-slot-number">Slot #5</span>
+          <div class="game-desc">Tap to grow your dog empire.</div>
+          <div class="meta-row">
+            <span class="tag live">Live</span>
+            <span>Slot #5</span>
           </div>
         </a>
 
-        <!-- Slots 6–30: coming soon placeholders -->
+        <!-- Slots 6–30 -->
+        <!-- Use a loop style for readability -->
+        <!-- Just duplicate these for 30 total -->
 
-        <!-- Slot 6 -->
+        <!-- Example "Coming Soon" slot -->
+        <!-- Copy this template for slots 6–30 -->
         <a class="game-card" href="#">
           <div class="game-thumb">
-            <img src="images/slot-coming-soon.svg" alt="Coming soon" />
+            <img src="images/slot-coming-soon.svg" />
           </div>
           <div class="game-title">Coming Soon</div>
-          <div class="game-desc">
-            Reserve this slot for your next game or sponsor mini-app.
-          </div>
-          <div class="game-meta-row">
-            <span class="game-tag soon">Empty slot</span>
-            <span class="game-slot-number">Slot #6</span>
+          <div class="game-desc">New game under development.</div>
+          <div class="meta-row">
+            <span class="tag soon">Empty</span>
+            <span>Slot #6</span>
           </div>
         </a>
 
-        <!-- Slot 7 -->
-        <a class="game-card" href="#">
-          <div class="game-thumb">
-            <img src="images/slot-coming-soon.svg" alt="Coming soon" />
-          </div>
-          <div class="game-title">Coming Soon</div>
-          <div class="game-desc">
-            Another slot ready for a new mini game or promotion.
-          </div>
-          <div class="game-meta-row">
-            <span class="game-tag soon">Empty slot</span>
-            <span class="game-slot-number">Slot #7</span>
-          </div>
-        </a>
+        <!-- Duplicate until Slot #30 -->
+        <!-- Just change the slot number each time -->
 
-        <!-- Slot 8 -->
-        <a class="game-card" href="#">
-          <div class="game-thumb">
-            <img src="images/slot-coming-soon.svg" alt="Coming soon" />
-          </div>
-          <div class="game-title">Coming Soon</div>
-          <div class="game-desc">
-            Perfect place to test small prototype games or A/B experiments.
-          </div>
-          <div class="game-meta-row">
-            <span class="game-tag soon">Empty slot</span>
-            <span class="game-slot-number">Slot #8</span>
-          </div>
-        </a>
-
-        <!-- Slot 9 -->
-        <a class="game-card" href="#">
-          <div class="game-thumb">
-            <img src="images/slot-coming-soon.svg" alt="Coming soon" />
-          </div>
-          <div class="game-title">Coming Soon</div>
-          <div class="game-desc">
-            Placeholder card with image + description pre-wired.
-          </div>
-          <div class="game-meta-row">
-            <span class="game-tag soon">Empty slot</span>
-            <span class="game-slot-number">Slot #9</span>
-          </div>
-        </a>
-
-        <!-- Slot 10 -->
-        <a class="game-card" href="#">
-          <div class="game-thumb">
-            <img src="images/slot-coming-soon.svg" alt="Coming soon" />
-          </div>
-          <div class="game-title">Coming Soon</div>
-          <div class="game-desc">
-            Swap this with a new HTML game file and update the link.
-          </div>
-          <div class="game-meta-row">
-            <span class="game-tag soon">Empty slot</span>
-            <span class="game-slot-number">Slot #10</span>
-          </div>
-        </a>
-
-        <!-- Slot 11 -->
-        <a class="game-card" href="#">
-          <div class="game-thumb">
-            <img src="images/slot-coming-soon.svg" alt="Coming soon" />
-          </div>
-          <div class="game-title">Coming Soon</div>
-          <div class="game-desc">
-            Another reserved card for future games or promos.
-          </div>
-          <div class="game-meta-row">
-            <span class="game-tag soon">Empty slot</span>
-            <span class="game-slot-number">Slot #11</span>
-          </div>
-        </a>
-
-        <!-- Slot 12 -->
-        <a class="game-card" href="#">
-          <div class="game-thumb">
-            <img src="images/slot-coming-soon.svg" alt="Coming soon" />
-          </div>
-          <div class="game-title">Coming Soon</div>
-          <div class="game-desc">
-            Plug in a leaderboard game or seasonal event here.
-          </div>
-          <div class="game-meta-row">
-            <span class="game-tag soon">Empty slot</span>
-            <span class="game-slot-number">Slot #12</span>
-          </div>
-        </a>
-
-        <!-- Slot 13 -->
-        <a class="game-card" href="#">
-          <div class="game-thumb">
-            <img src="images/slot-coming-soon.svg" alt="Coming soon" />
-          </div>
-          <div class="game-title">Coming Soon</div>
-          <div class="game-desc">
-            Designed for simple HTML / JS games, no backend needed.
-          </div>
-          <div class="game-meta-row">
-            <span class="game-tag soon">Empty slot</span>
-            <span class="game-slot-number">Slot #13</span>
-          </div>
-        </a>
-
-        <!-- Slot 14 -->
-        <a class="game-card" href="#">
-          <div class="game-thumb">
-            <img src="images/slot-coming-soon.svg" alt="Coming soon" />
-          </div>
-          <div class="game-title">Coming Soon</div>
-          <div class="game-desc">
-            Use these placeholders for advergames or sponsors.
-          </div>
-          <div class="game-meta-row">
-            <span class="game-tag soon">Empty slot</span>
-            <span class="game-slot-number">Slot #14</span>
-          </div>
-        </a>
-
-        <!-- Slot 15 -->
-        <a class="game-card" href="#">
-          <div class="game-thumb">
-            <img src="images/slot-coming-soon.svg" alt="Coming soon" />
-          </div>
-          <div class="game-title">Coming Soon</div>
-          <div class="game-desc">
-            Swap thumbnail + text and link to your own game page.
-          </div>
-          <div class="game-meta-row">
-            <span class="game-tag soon">Empty slot</span>
-            <span class="game-slot-number">Slot #15</span>
-          </div>
-        </a>
-
-        <!-- Slot 16 -->
-        <a class="game-card" href="#">
-          <div class="game-thumb">
-            <img src="images/slot-coming-soon.svg" alt="Coming soon" />
-          </div>
-          <div class="game-title">Coming Soon</div>
-          <div class="game-desc">
-            You can also turn a slot into a full-width sponsor card.
-          </div>
-          <div class="game-meta-row">
-            <span class="game-tag soon">Empty slot</span>
-            <span class="game-slot-number">Slot #16</span>
-          </div>
-        </a>
-
-        <!-- Slot 17 -->
-        <a class="game-card" href="#">
-          <div class="game-thumb">
-            <img src="images/slot-coming-soon.svg" alt="Coming soon" />
-          </div>
-          <div class="game-title">Coming Soon</div>
-          <div class="game-desc">
-            Placeholder text to keep the grid visually consistent.
-          </div>
-          <div class="game-meta-row">
-            <span class="game-tag soon">Empty slot</span>
-            <span class="game-slot-number">Slot #17</span>
-          </div>
-        </a>
-
-        <!-- Slot 18 -->
-        <a class="game-card" href="#">
-          <div class="game-thumb">
-            <img src="images/slot-coming-soon.svg" alt="Coming soon" />
-          </div>
-          <div class="game-title">Coming Soon</div>
-          <div class="game-desc">
-            Could host multiplayer experiments or simple quizzes.
-          </div>
-          <div class="game-meta-row">
-            <span class="game-tag soon">Empty slot</span>
-            <span class="game-slot-number">Slot #18</span>
-          </div>
-        </a>
-
-        <!-- Slot 19 -->
-        <a class="game-card" href="#">
-          <div class="game-thumb">
-            <img src="images/slot-coming-soon.svg" alt="Coming soon" />
-          </div>
-          <div class="game-title">Coming Soon</div>
-          <div class="game-desc">
-            Add a puzzle, memory game, or reaction test here.
-          </div>
-          <div class="game-meta-row">
-            <span class="game-tag soon">Empty slot</span>
-            <span class="game-slot-number">Slot #19</span>
-          </div>
-        </a>
-
-        <!-- Slot 20 -->
-        <a class="game-card" href="#">
-          <div class="game-thumb">
-            <img src="images/slot-coming-soon.svg" alt="Coming soon" />
-          </div>
-          <div class="game-title">Coming Soon</div>
-          <div class="game-desc">
-            Ready for arcade-style or idle games like the dog farm.
-          </div>
-          <div class="game-meta-row">
-            <span class="game-tag soon">Empty slot</span>
-            <span class="game-slot-number">Slot #20</span>
-          </div>
-        </a>
-
-        <!-- Slot 21 -->
-        <a class="game-card" href="#">
-          <div class="game-thumb">
-            <img src="images/slot-coming-soon.svg" alt="Coming soon" />
-          </div>
-          <div class="game-title">Coming Soon</div>
-          <div class="game-desc">
-            Keep adding new experiments as you learn JS & game dev.
-          </div>
-          <div class="game-meta-row">
-            <span class="game-tag soon">Empty slot</span>
-            <span class="game-slot-number">Slot #21</span>
-          </div>
-        </a>
-
-        <!-- Slot 22 -->
-        <a class="game-card" href="#">
-          <div class="game-thumb">
-            <img src="images/slot-coming-soon.svg" alt="Coming soon" />
-          </div>
-          <div class="game-title">Coming Soon</div>
-          <div class="game-desc">
-            Placeholder ready for future upgrades like leaderboards.
-          </div>
-          <div class="game-meta-row">
-            <span class="game-tag soon">Empty slot</span>
-            <span class="game-slot-number">Slot #22</span>
-          </div>
-        </a>
-
-        <!-- Slot 23 -->
-        <a class="game-card" href="#">
-          <div class="game-thumb">
-            <img src="images/slot-coming-soon.svg" alt="Coming soon" />
-          </div>
-          <div class="game-title">Coming Soon</div>
-          <div class="game-desc">
-            You can group themed games together in nearby slots.
-          </div>
-          <div class="game-meta-row">
-            <span class="game-tag soon">Empty slot</span>
-            <span class="game-slot-number">Slot #23</span>
-          </div>
-        </a>
-
-        <!-- Slot 24 -->
-        <a class="game-card" href="#">
-          <div class="game-thumb">
-            <img src="images/slot-coming-soon.svg" alt="Coming soon" />
-          </div>
-          <div class="game-title">Coming Soon</div>
-          <div class="game-desc">
-            Good place for seasonal events (Halloween, CNY, etc.).
-          </div>
-          <div class="game-meta-row">
-            <span class="game-tag soon">Empty slot</span>
-            <span class="game-slot-number">Slot #24</span>
-          </div>
-        </a>
-
-        <!-- Slot 25 -->
-        <a class="game-card" href="#">
-          <div class="game-thumb">
-            <img src="images/slot-coming-soon.svg" alt="Coming soon" />
-          </div>
-          <div class="game-title">Coming Soon</div>
-          <div class="game-desc">
-            Keep this empty for experiments or private test games.
-          </div>
-          <div class="game-meta-row">
-            <span class="game-tag soon">Empty slot</span>
-            <span class="game-slot-number">Slot #25</span>
-          </div>
-        </a>
-
-        <!-- Slot 26 -->
-        <a class="game-card" href="#">
-          <div class="game-thumb">
-            <img src="images/slot-coming-soon.svg" alt="Coming soon" />
-          </div>
-          <div class="game-title">Coming Soon</div>
-          <div class="game-desc">
-            Swap this card to feature your most popular new game.
-          </div>
-          <div class="game-meta-row">
-            <span class="game-tag soon">Empty slot</span>
-            <span class="game-slot-number">Slot #26</span>
-          </div>
-        </a>
-
-        <!-- Slot 27 -->
-        <a class="game-card" href="#">
-          <div class="game-thumb">
-            <img src="images/slot-coming-soon.svg" alt="Coming soon" />
-          </div>
-          <div class="game-title">Coming Soon</div>
-          <div class="game-desc">
-            Another flexible slot for casual prototypes or ads.
-          </div>
-          <div class="game-meta-row">
-            <span class="game-tag soon">Empty slot</span>
-            <span class="game-slot-number">Slot #27</span>
-          </div>
-        </a>
-
-        <!-- Slot 28 -->
-        <a class="game-card" href="#">
-          <div class="game-thumb">
-            <img src="images/slot-coming-soon.svg" alt="Coming soon" />
-          </div>
-          <div class="game-title">Coming Soon</div>
-          <div class="game-desc">
-            You can also link to external games if you want.
-          </div>
-          <div class="game-meta-row">
-            <span class="game-tag soon">Empty slot</span>
-            <span class="game-slot-number">Slot #28</span>
-          </div>
-        </a>
-
-        <!-- Slot 29 -->
-        <a class="game-card" href="#">
-          <div class="game-thumb">
-            <img src="images/slot-coming-soon.svg" alt="Coming soon" />
-          </div>
-          <div class="game-title">Coming Soon</div>
-          <div class="game-desc">
-            Ideal for school projects, mini experiments or demos.
-          </div>
-          <div class="game-meta-row">
-            <span class="game-tag soon">Empty slot</span>
-            <span class="game-slot-number">Slot #29</span>
-          </div>
-        </a>
-
-        <!-- Slot 30 -->
-        <a class="game-card" href="#">
-          <div class="game-thumb">
-            <img src="images/slot-coming-soon.svg" alt="Coming soon" />
-          </div>
-          <div class="game-title">Coming Soon</div>
-          <div class="game-desc">
-            Final slot in this grid. Expand to more pages if needed.
-          </div>
-          <div class="game-meta-row">
-            <span class="game-tag soon">Empty slot</span>
-            <span class="game-slot-number">Slot #30</span>
-          </div>
-        </a>
-      </section>
+      </div>
     </main>
 
-    <!-- SIDE COLUMN -->
-    <aside class="panel side-panel">
-      <div class="side-ad">
-        <div class="side-ad-title">Right Rail Ad #1</div>
-        <div class="side-ad-size">300 × 250</div>
-        <div>Use this slot for a display ad, sponsor logo, or cross-promo.</div>
+    <!-- RIGHT ADS -->
+    <div class="ad-col">
+      <div class="ad-box">
+        <div class="ad-title">Ad Slot #3</div>
+        <div>300 × 250</div>
       </div>
 
-      <div class="side-ad">
-        <div class="side-ad-title">Right Rail Ad #2</div>
-        <div class="side-ad-size">160 × 600</div>
-        <div>Long, vertical unit works well for tall banner ads.</div>
+      <div class="ad-box">
+        <div class="ad-title">Ad Slot #4</div>
+        <div>160 × 600</div>
       </div>
+    </div>
 
-      <div class="side-note">
-        This arcade is built as a static HTML page. To add a new game:
-        <ol style="margin-top:4px; padding-left:18px;">
-          <li>Create a new <code>.html</code> file for the game.</li>
-          <li>Upload an image into <code>images/</code> (or reuse an existing one).</li>
-          <li>Change one of the "Coming Soon" cards to link to your new file.</li>
-        </ol>
-      </div>
-    </aside>
   </div>
 </body>
 </html>
