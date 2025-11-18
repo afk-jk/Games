@@ -322,7 +322,7 @@
 
         <div class="status-row">
           <span id="statusText" class="status-text"></span>
-          <span>Tip: avoid turning into your own tail.</span>
+          <span>Tip: plan turns early, not last second.</span>
         </div>
       </div>
     </main>
@@ -356,13 +356,13 @@
       const BEST_KEY = "arcadeSnakeBest";
 
       let snake = [];
-      let direction = { x: 1, y: 0 };
-      let nextDirection = { x: 1, y: 0 };
+      let direction = { x: 1, y: 0 };      // actual movement direction (updated at each tick)
+      let nextDirection = { x: 1, y: 0 };  // queued direction from inputs
       let food = null;
       let score = 0;
       let best = Number(localStorage.getItem(BEST_KEY)) || 0;
       let speedLevel = 1;
-      let tickInterval = 140;
+      let tickInterval = 110;              // faster = smoother
       let timer = null;
       let gameOver = false;
 
@@ -378,7 +378,7 @@
         nextDirection = { x: 1, y: 0 };
         score = 0;
         speedLevel = 1;
-        tickInterval = 140;
+        tickInterval = 110;
         scoreEl.textContent = "0";
         speedEl.textContent = speedLevel + "x";
         statusText.textContent = "";
@@ -409,7 +409,8 @@
 
       function tick() {
         if (gameOver) return;
-        // update direction at start of tick (to avoid reversing into itself)
+
+        // Apply queued direction change at start of tick
         direction = { ...nextDirection };
 
         const head = snake[0];
@@ -445,10 +446,10 @@
             bestEl.textContent = best;
             localStorage.setItem(BEST_KEY, best);
           }
-          // increase speed every 4 foods
-          if (score % 40 === 0 && tickInterval > 70) {
+          // Smooth speed increase: every 50 points
+          if (score % 50 === 0 && tickInterval > 70) {
             speedLevel++;
-            tickInterval -= 15;
+            tickInterval -= 8; // small change so it feels smoother
             speedEl.textContent = speedLevel + "x";
             restartLoop();
             statusText.textContent = "Speed up!";
@@ -458,7 +459,7 @@
                 statusText.textContent = "";
                 statusText.className = "status-text";
               }
-            }, 700);
+            }, 600);
           }
           placeFood();
         } else {
@@ -472,11 +473,11 @@
       function draw() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // background grid
+        // background
         ctx.fillStyle = "#020617";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        // subtle grid lines
+        // subtle grid
         ctx.strokeStyle = "#0b1220";
         ctx.lineWidth = 1;
         for (let i = 0; i <= GRID_SIZE; i++) {
@@ -492,32 +493,94 @@
           ctx.stroke();
         }
 
-        // food
+        // food: glowing orb
         if (food) {
           const fx = food.x * CELL;
           const fy = food.y * CELL;
-          const r = CELL / 2.3;
-          ctx.fillStyle = "#f97316";
+          const cx = fx + CELL / 2;
+          const cy = fy + CELL / 2;
+          const r = CELL / 2.4;
+          const grad = ctx.createRadialGradient(cx, cy, r / 4, cx, cy, r);
+          grad.addColorStop(0, "#facc15");
+          grad.addColorStop(1, "#f97316");
+          ctx.fillStyle = grad;
           ctx.beginPath();
-          ctx.arc(fx + CELL / 2, fy + CELL / 2, r, 0, Math.PI * 2);
+          ctx.arc(cx, cy, r, 0, Math.PI * 2);
           ctx.fill();
         }
 
-        // snake
-        snake.forEach((seg, index) => {
+        // snake body
+        snake.forEach((seg, idx) => {
           const x = seg.x * CELL;
           const y = seg.y * CELL;
-          if (index === 0) {
-            // head
+
+          if (idx === 0) {
+            // head with gradient + eyes
             const grad = ctx.createLinearGradient(x, y, x + CELL, y + CELL);
             grad.addColorStop(0, "#38bdf8");
             grad.addColorStop(1, "#1d4ed8");
             ctx.fillStyle = grad;
+            roundRect(ctx, x + 1, y + 1, CELL - 2, CELL - 2, CELL * 0.25);
+            ctx.fill();
+
+            // eyes based on direction
+            const eyeOffset = CELL * 0.18;
+            const eyeRadius = CELL * 0.09;
+            let ex1 = x + CELL / 2;
+            let ey1 = y + CELL / 2;
+            let ex2 = ex1;
+            let ey2 = ey1;
+
+            if (direction.x === 1) { // right
+              ex1 = x + CELL * 0.6;
+              ex2 = x + CELL * 0.6;
+              ey1 = y + CELL * 0.35;
+              ey2 = y + CELL * 0.65;
+            } else if (direction.x === -1) { // left
+              ex1 = x + CELL * 0.4;
+              ex2 = x + CELL * 0.4;
+              ey1 = y + CELL * 0.35;
+              ey2 = y + CELL * 0.65;
+            } else if (direction.y === -1) { // up
+              ey1 = y + CELL * 0.4;
+              ey2 = y + CELL * 0.4;
+              ex1 = x + CELL * 0.35;
+              ex2 = x + CELL * 0.65;
+            } else if (direction.y === 1) { // down
+              ey1 = y + CELL * 0.6;
+              ey2 = y + CELL * 0.6;
+              ex1 = x + CELL * 0.35;
+              ex2 = x + CELL * 0.65;
+            }
+
+            ctx.fillStyle = "#0b1120";
+            ctx.beginPath(); ctx.arc(ex1, ey1, eyeRadius, 0, Math.PI * 2); ctx.fill();
+            ctx.beginPath(); ctx.arc(ex2, ey2, eyeRadius, 0, Math.PI * 2); ctx.fill();
           } else {
-            ctx.fillStyle = "#22c55e";
+            // body: slightly rounded rects
+            const bodyGrad = ctx.createLinearGradient(x, y, x + CELL, y + CELL);
+            bodyGrad.addColorStop(0, "#22c55e");
+            bodyGrad.addColorStop(1, "#16a34a");
+            ctx.fillStyle = bodyGrad;
+            roundRect(ctx, x + 1.5, y + 1.5, CELL - 3, CELL - 3, CELL * 0.22);
+            ctx.fill();
           }
-          ctx.fillRect(x + 1, y + 1, CELL - 2, CELL - 2);
         });
+      }
+
+      function roundRect(ctx, x, y, w, h, r) {
+        const radius = Math.min(r, w / 2, h / 2);
+        ctx.beginPath();
+        ctx.moveTo(x + radius, y);
+        ctx.lineTo(x + w - radius, y);
+        ctx.quadraticCurveTo(x + w, y, x + w, y + radius);
+        ctx.lineTo(x + w, y + h - radius);
+        ctx.quadraticCurveTo(x + w, y + h, x + w - radius, y + h);
+        ctx.lineTo(x + radius, y + h);
+        ctx.quadraticCurveTo(x, y + h, x, y + h - radius);
+        ctx.lineTo(x, y + radius);
+        ctx.quadraticCurveTo(x, y, x + radius, y);
+        ctx.closePath();
       }
 
       function endGame() {
@@ -528,8 +591,9 @@
       }
 
       function handleDirectionChange(dx, dy) {
-        // prevent reversing directly
-        if (dx === -direction.x && dy === -direction.y) return;
+        // Prevent reversing relative to the *queued* direction,
+        // so you can't spam two keys and flip back on the same tick.
+        if (dx === -nextDirection.x && dy === -nextDirection.y) return;
         nextDirection = { x: dx, y: dy };
       }
 
