@@ -2,17 +2,15 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Mini Games Arcade</title>
+  <title>Tetris – Mini Games Arcade</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     :root {
       --bg: #020617;
-      --bg-soft: #0f172a;
-      --card: #020617;
-      --accent: #38bdf8;
-      --accent-soft: #1d4ed8;
+      --panel: #020617;
       --text: #e5e7eb;
       --muted: #9ca3af;
+      --accent: #38bdf8;
     }
 
     * {
@@ -23,439 +21,628 @@
         sans-serif;
     }
 
+    html, body {
+      height: 100%;
+    }
+
     body {
       min-height: 100vh;
+      overflow: hidden;
       background: radial-gradient(circle at top, #1f2937 0, #020617 55%);
       color: var(--text);
       display: flex;
       justify-content: center;
-      padding: 16px;
+      padding: 10px;
     }
 
     .page {
       width: 100%;
       max-width: 1200px;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    header {
-      background: radial-gradient(circle at top, #111827 0, #020617 70%);
-      border-radius: 18px;
-      border: 1px solid rgba(148, 163, 184, 0.45);
-      box-shadow: 0 14px 32px rgba(0, 0, 0, 0.6);
-      padding: 14px 16px 12px;
-      position: sticky;
-      top: 0;
-      z-index: 5;
-      backdrop-filter: blur(10px);
-    }
-
-    header h1 {
-      font-size: 1.7rem;
-      margin-bottom: 2px;
-    }
-
-    header p {
-      font-size: 0.9rem;
-      color: var(--muted);
-    }
-
-    .badge {
-      background: rgba(15, 23, 42, 0.9);
-      border-radius: 999px;
-      padding: 4px 10px;
-      font-size: 0.8rem;
-      border: 1px solid rgba(148, 163, 184, 0.6);
-      align-self: center;
-    }
-
-    /* Top banner ad */
-    .ad-banner {
-      margin-top: 10px;
-      border-radius: 14px;
-      border: 2px dashed rgba(148, 163, 184, 0.6);
-      background: radial-gradient(circle at top, #020617 0, #020617 70%);
-      padding: 10px;
-      text-align: center;
-      font-size: 0.85rem;
-      color: var(--muted);
-    }
-
-    .ad-banner-title {
-      font-weight: 600;
-      margin-bottom: 2px;
-    }
-
-    .ad-banner-size {
-      font-size: 0.78rem;
-      opacity: 0.9;
-      margin-bottom: 2px;
-    }
-
-    /* Main layout */
-    .content {
       display: grid;
-      grid-template-columns: 220px minmax(0, 1fr) 220px;
-      gap: 14px;
+      grid-template-columns: 200px minmax(0, 1fr) 200px;
+      gap: 10px;
+      align-items: center;
     }
 
     @media (max-width: 960px) {
-      .content {
+      body {
+        overflow-y: auto;
+      }
+      .page {
         grid-template-columns: minmax(0, 1fr);
       }
     }
 
     .panel {
-      background: radial-gradient(circle at top, #111827 0, #020617 70%);
-      border-radius: 18px;
-      border: 1px solid rgba(148, 163, 184, 0.45);
-      box-shadow: 0 14px 32px rgba(0, 0, 0, 0.6);
-      padding: 12px;
+      background: radial-gradient(circle at top, #020617 0, #020617 70%);
+      border-radius: 16px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      box-shadow: 0 16px 32px rgba(0, 0, 0, 0.7);
+      padding: 10px;
+    }
+
+    .ad-column {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .ad-slot {
+      height: 140px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border-radius: 14px;
+      border: 2px dashed rgba(148, 163, 184, 0.7);
+      background: rgba(15, 23, 42, 0.8);
+      color: var(--muted);
+      text-align: center;
+      padding: 6px;
+      font-size: 0.78rem;
+    }
+
+    .ad-label {
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    .ad-size {
+      font-size: 0.75rem;
+      opacity: 0.9;
+      margin-bottom: 2px;
     }
 
     .main-panel {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 6px;
+      align-items: center;
     }
 
-    .games-header {
+    .top-bar {
+      width: 100%;
       display: flex;
       justify-content: space-between;
-      align-items: baseline;
+      align-items: center;
+      gap: 6px;
     }
 
-    .games-header h2 {
-      font-size: 1.1rem;
+    .back-link {
+      text-decoration: none;
+      font-size: 0.78rem;
+      color: var(--muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 9px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      background: rgba(15, 23, 42, 0.8);
     }
 
-    .games-header span {
+    .back-link:hover {
+      border-color: var(--accent);
+      color: #f9fafb;
+    }
+
+    h1 {
+      font-size: 1.7rem;
+      letter-spacing: 0.06em;
+    }
+
+    .subtitle {
       font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 4px;
+      width: 100%;
+    }
+
+    .game-container {
+      width: 100%;
+      max-width: 480px;
+    }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+      flex-wrap: wrap;
+    }
+
+    .score-boxes {
+      display: flex;
+      gap: 6px;
+    }
+
+    .score-box {
+      min-width: 70px;
+      padding: 4px 8px 3px;
+      border-radius: 8px;
+      background: radial-gradient(circle at top, #1f2937 0, #020617 70%);
+      color: var(--text);
+      text-align: center;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+    }
+
+    .score-label {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      opacity: 0.9;
       color: var(--muted);
     }
 
-    .games-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 10px;
-      margin-top: 4px;
+    .score-value {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-top: 1px;
     }
 
-    .game-card {
-      background: linear-gradient(135deg, var(--card), #020617);
-      border-radius: 16px;
-      padding: 12px 12px 10px;
-      border: 1px solid rgba(148, 163, 184, 0.5);
+    .btn {
+      border: none;
+      outline: none;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #38bdf8, #1d4ed8);
+      color: #f9fafb;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.78rem;
+      box-shadow: 0 5px 14px rgba(37, 99, 235, 0.6);
+      transition: transform 0.08s ease, box-shadow 0.08s ease, opacity 0.15s;
+      white-space: nowrap;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 18px rgba(37, 99, 235, 0.8);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+      box-shadow: 0 4px 10px rgba(37, 99, 235, 0.5);
+    }
+
+    .controls-text {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .controls-text span {
+      background: rgba(15, 23, 42, 0.85);
+      border-radius: 999px;
+      padding: 2px 7px;
+      margin-right: 4px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+    }
+
+    /* SHORTER BOARD */
+    .board-wrapper {
+      width: 100%;
+      max-width: 380px;
+      margin: 0 auto;
+      /* 10 columns x 18 rows */
+      aspect-ratio: 10 / 18;
+      background: radial-gradient(circle at top, #020617 0, #000000 75%);
+      border-radius: 10px;
+      padding: 6px;
+      box-shadow: 0 14px 0 #020617, 0 20px 32px rgba(0, 0, 0, 0.85);
       position: relative;
       overflow: hidden;
-      cursor: pointer;
-      text-decoration: none;
-      color: inherit;
-      transition: transform 0.12s ease, box-shadow 0.12s ease,
-        border-color 0.12s ease, background 0.12s ease;
+      user-select: none;
+      touch-action: none;
     }
 
-    .game-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 14px 30px rgba(15, 23, 42, 0.9);
-      border-color: rgba(56, 189, 248, 0.8);
-      background: radial-gradient(circle at top, #1f2937 0, #020617 70%);
-    }
-
-    /* Thumbnail area */
-    .game-thumb {
-      width: 100%;
-      aspect-ratio: 16 / 9;
-      border-radius: 12px;
-      margin-bottom: 6px;
-      background:
-        radial-gradient(circle at top, #1f2937 0, #020617 70%);
-      border: 1px solid rgba(148, 163, 184, 0.5);
-      overflow: hidden;
-    }
-
-    .game-thumb img {
+    .board-grid {
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      grid-template-rows: repeat(18, 1fr); /* 18 rows instead of 20 */
+      gap: 2px;
     }
 
-    .game-title {
-      font-weight: 600;
-      margin-bottom: 2px;
-      font-size: 0.95rem;
+    .cell {
+      border-radius: 3px;
+      background: #020617;
+      box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 1);
     }
 
-    .game-tag {
-      display: inline-block;
-      border-radius: 999px;
-      padding: 2px 8px;
-      font-size: 0.72rem;
-      background: rgba(56, 189, 248, 0.16);
-      border: 1px solid rgba(56, 189, 248, 0.4);
-      margin-bottom: 5px;
+    .cell.filled {
+      box-shadow: none;
     }
 
-    .coming-soon .game-tag {
-      background: rgba(148, 163, 184, 0.12);
-      border-color: rgba(148, 163, 184, 0.4);
-    }
+    .cI { background: #06b6d4; }
+    .cO { background: #eab308; }
+    .cT { background: #a855f7; }
+    .cS { background: #22c55e; }
+    .cZ { background: #ef4444; }
+    .cJ { background: #3b82f6; }
+    .cL { background: #f97316; }
 
-    .game-desc {
-      font-size: 0.8rem;
-      color: var(--muted);
-    }
-
-    .game-slot-number {
-      position: absolute;
-      right: 6px;
-      bottom: 6px;
-      font-size: 0.7rem;
-      color: rgba(148, 163, 184, 0.7);
-    }
-
-    /* Side Ads */
-    .ad-column {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .ad-slot {
-      height: 180px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      border-radius: 16px;
-      border: 2px dashed rgba(148, 163, 184, 0.55);
-      background: radial-gradient(circle at top, #020617 0, #020617 70%);
-      color: var(--muted);
-      text-align: center;
-      padding: 8px;
-      font-size: 0.82rem;
-    }
-
-    .footer-ad {
-      margin-top: 12px;
-      background: radial-gradient(circle at top, #111827 0, #020617 70%);
-      border-radius: 18px;
-      border: 1px dashed rgba(148, 163, 184, 0.6);
-      box-shadow: 0 12px 26px rgba(0, 0, 0, 0.7);
-      padding: 10px;
-      text-align: center;
-      font-size: 0.85rem;
-      color: var(--muted);
-    }
-
-    footer {
+    .status-row {
       margin-top: 4px;
       font-size: 0.78rem;
       color: var(--muted);
-      text-align: right;
+      display: flex;
+      justify-content: space-between;
+      gap: 6px;
+    }
+
+    .status-text {
+      font-weight: 600;
+    }
+
+    .status-text.over {
+      color: #f97316;
     }
   </style>
 </head>
 <body>
   <div class="page">
-    <header>
-      <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px;">
-        <div>
-          <h1>Mini Games Arcade</h1>
-          <p>Pick a game from the list. More games and ads can be added anytime.</p>
-        </div>
-        <div class="badge">
-          30 game slots • static HTML
-        </div>
+    <!-- Left ads -->
+    <aside class="panel ad-column">
+      <div class="ad-slot">
+        <div class="ad-label">Ad Slot #1</div>
+        <div class="ad-size">300 × 250</div>
+        <div>Paste banner/ad script here.</div>
       </div>
-
-      <div class="ad-banner">
-        <div class="ad-banner-title">Top Banner Ad Space</div>
-        <div class="ad-banner-size">Recommended: 728 × 90 or responsive</div>
-        <div>Add your ad script here.</div>
+      <div class="ad-slot">
+        <div class="ad-label">Ad Slot #2</div>
+        <div class="ad-size">160 × 600</div>
       </div>
-    </header>
+    </aside>
 
-    <main class="content">
-      <!-- Left ads -->
-      <aside class="panel ad-column">
-        <div class="ad-slot">
-          <div class="ad-label">Ad Slot #1</div>
-          <div class="ad-size">300 × 250</div>
-        </div>
-        <div class="ad-slot">
-          <div class="ad-label">Ad Slot #2</div>
-          <div class="ad-size">300 × 600</div>
-        </div>
-        <div class="ad-slot">
-          <div class="ad-label">Ad Slot #3</div>
-        </div>
-      </aside>
+    <!-- Game -->
+    <main class="panel main-panel">
+      <div class="top-bar">
+        <a class="back-link" href="index.html">← Back to games</a>
+        <h1>Tetris</h1>
+      </div>
+      <p class="subtitle">Stack falling blocks to clear lines. Don’t hit the top!</p>
 
-      <!-- Games -->
-      <section class="panel main-panel">
-        <div class="games-header">
-          <h2>Games</h2>
-          <span>Slot 1 is live. Others coming soon.</span>
-        </div>
-
-        <section class="games-grid">
-
-          <!-- Slot 1: Space Dodger -->
-          <a class="game-card" href="square-dodger.html">
-            <div class="game-thumb">
-              <img src="images/space-dodger.svg" alt="Space Dodger">
+      <div class="game-container">
+        <div class="info-row">
+          <div class="score-boxes">
+            <div class="score-box">
+              <div class="score-label">Score</div>
+              <div id="score" class="score-value">0</div>
             </div>
-            <div class="game-tag">Live</div>
-            <div class="game-title">Space Dodger</div>
-            <div class="game-desc">Dodge, shoot, power-up and survive.</div>
-            <div class="game-slot-number">Slot #1</div>
-          </a>
-
-          <!-- Slots 2–30 auto-generated -->
-          <!-- ALL identical structure -->
-          <!-- If you want images later, replace the thumb div like slot #1 -->
-
-          <!-- Slot generator template -->
-          <!-- Repeat for slots 2–30 -->
-
-          <!-- (I will generate them automatically ↓) -->
-
-          <a class="game-card" href="2048.html">
-  <div class="game-thumb">
-    <img src="images/slot-coming-soon.svg" alt="2048 cover">
-  </div>
-  <div class="game-tag">New</div>
-  <div class="game-title">2048</div>
-  <div class="game-desc">
-    Slide the tiles to combine matching numbers and reach 2048.
-  </div>
-  <div class="game-slot-number">Slot #2</div>
-</a>
-
-<a class="game-card" href="tetris.html">
-  <div class="game-thumb">
-    <img src="images/slot-coming-soon.svg" alt="Tetris-style game">
-  </div>
-  <div class="game-tag">New</div>
-  <div class="game-title">Tetris</div>
-  <div class="game-desc">
-    Stack falling blocks, clear lines, and level up.
-  </div>
-  <div class="game-slot-number">Slot #3</div>
-</a>
-
-
-          <!-- Slot 4 -->
-          <div class="game-card coming-soon">
-            <div class="game-thumb"></div>
-            <div class="game-tag">Coming soon</div>
-            <div class="game-title">Game Slot #4</div>
-            <div class="game-desc">Placeholder for future game.</div>
-            <div class="game-slot-number">Slot #4</div>
+            <div class="score-box">
+              <div class="score-label">Lines</div>
+              <div id="lines" class="score-value">0</div>
+            </div>
+            <div class="score-box">
+              <div class="score-label">Level</div>
+              <div id="level" class="score-value">1</div>
+            </div>
           </div>
-
-          <!-- Slot 5 -->
-          <div class="game-card coming-soon">
-            <div class="game-thumb"></div>
-            <div class="game-tag">Coming soon</div>
-            <div class="game-title">Game Slot #5</div>
-            <div class="game-desc">Placeholder for future game.</div>
-            <div class="game-slot-number">Slot #5</div>
-          </div>
-
-          <!-- Slot 6 -->
-          <div class="game-card coming-soon">
-            <div class="game-thumb"></div>
-            <div class="game-tag">Coming soon</div>
-            <div class="game-title">Game Slot #6</div>
-            <div class="game-desc">Placeholder for future game.</div>
-            <div class="game-slot-number">Slot #6</div>
-          </div>
-
-          <!-- Slot 7 -->
-          <div class="game-card coming-soon">
-            <div class="game-thumb"></div>
-            <div class="game-tag">Coming soon</div>
-            <div class="game-title">Game Slot #7</div>
-            <div class="game-desc">Placeholder for future game.</div>
-            <div class="game-slot-number">Slot #7</div>
-          </div>
-
-          <!-- Slot 8 -->
-          <div class="game-card coming-soon">
-            <div class="game-thumb"></div>
-            <div class="game-tag">Coming soon</div>
-            <div class="game-title">Game Slot #8</div>
-            <div class="game-desc">Placeholder.</div>
-            <div class="game-slot-number">Slot #8</div>
-          </div>
-
-          <!-- Repeat up to Slot 30 -->
-          <!-- (To save space, I summarise below) -->
-
-          <!-- Slots 9–30 -->
-          <!-- You already have these in your current file; keep them identical -->
-          <!-- Just ensure each has: -->
-          <!-- <div class="game-thumb"></div> -->
-
-          <!-- GENERATE SLOTS 9–30 -->
-          <!-- (Same structure; only slot number changes) -->
-
-          <!-- Auto-generate remaining slots -->
-          <!-- Feel free to copy/paste and change numbers -->
-
-          <!-- Slot 9 -->
-          <div class="game-card coming-soon">
-            <div class="game-thumb"></div>
-            <div class="game-tag">Coming soon</div>
-            <div class="game-title">Game Slot #9</div>
-            <div class="game-desc">Placeholder.</div>
-            <div class="game-slot-number">Slot #9</div>
-          </div>
-
-          <!-- Slot 10 -->
-          <div class="game-card coming-soon">
-            <div class="game-thumb"></div>
-            <div class="game-tag">Coming soon</div>
-            <div class="game-title">Game Slot #10</div>
-            <div class="game-desc">Placeholder.</div>
-            <div class="game-slot-number">Slot #10</div>
-          </div>
-
-          <!-- Repeat up to Slot #30 -->
-          <!-- (same structure, only number changes) -->
-
-          <!-- Slot 30 -->
-          <div class="game-card coming-soon">
-            <div class="game-thumb"></div>
-            <div class="game-tag">Coming soon</div>
-            <div class="game-title">Game Slot #30</div>
-            <div class="game-desc">Placeholder.</div>
-            <div class="game-slot-number">Slot #30</div>
-          </div>
-        </section>
-
-        <div class="footer-ad">
-          <div class="footer-ad-title">Bottom Ad Space</div>
-          <div class="footer-ad-size">728 × 90</div>
-          <div>Your ad here</div>
+          <button id="newGameBtn" class="btn">New Game</button>
         </div>
 
-        <footer>
-          Tip: Add an image to each slot by placing a PNG or SVG inside <code>images/</code>.
-        </footer>
-      </section>
+        <div class="controls-text">
+          <span>← / →: Move</span>
+          <span>↓: Soft drop</span>
+          <span>↑ or X: Rotate</span>
+          <span>Space: Hard drop</span>
+        </div>
 
-      <!-- Right ads -->
-      <aside class="panel ad-column">
-        <div class="ad-slot"><div class="ad-label">Ad Slot #4</div></div>
-        <div class="ad-slot"><div class="ad-label">Ad Slot #5</div></div>
-        <div class="ad-slot"><div class="ad-label">Ad Slot #6</div></div>
-      </aside>
+        <div class="board-wrapper" id="boardWrapper">
+          <div class="board-grid" id="boardGrid">
+            <!-- cells added by JS -->
+          </div>
+        </div>
+
+        <div class="status-row">
+          <span id="statusText" class="status-text"></span>
+          <span>Tip: keep a clean, flat stack.</span>
+        </div>
+      </div>
     </main>
+
+    <!-- Right ads -->
+    <aside class="panel ad-column">
+      <div class="ad-slot">
+        <div class="ad-label">Ad Slot #3</div>
+        <div class="ad-size">300 × 250</div>
+      </div>
+      <div class="ad-slot">
+        <div class="ad-label">Ad Slot #4</div>
+        <div class="ad-size">Flexible</div>
+      </div>
+    </aside>
   </div>
+
+  <script>
+    (function () {
+      const COLS = 10;
+      const ROWS = 18; // shorter board
+
+      const boardGrid = document.getElementById("boardGrid");
+      const boardWrapper = document.getElementById("boardWrapper");
+      const scoreEl = document.getElementById("score");
+      const linesEl = document.getElementById("lines");
+      const levelEl = document.getElementById("level");
+      const newGameBtn = document.getElementById("newGameBtn");
+      const statusText = document.getElementById("statusText");
+
+      let board = [];
+      let cells = [];
+      let current = null;
+      let dropTimer = null;
+      let dropInterval = 700; // ms
+      let score = 0;
+      let lines = 0;
+      let level = 1;
+      let gameOver = false;
+
+      const SHAPES = {
+        I: [[0,1],[1,1],[2,1],[3,1]],
+        O: [[1,0],[2,0],[1,1],[2,1]],
+        T: [[1,0],[0,1],[1,1],[2,1]],
+        S: [[1,1],[2,1],[0,2],[1,2]],
+        Z: [[0,1],[1,1],[1,2],[2,2]],
+        J: [[0,0],[0,1],[1,1],[2,1]],
+        L: [[2,0],[0,1],[1,1],[2,1]],
+      };
+
+      const COLORS = {
+        I: "cI",
+        O: "cO",
+        T: "cT",
+        S: "cS",
+        Z: "cZ",
+        J: "cJ",
+        L: "cL",
+      };
+
+      function initBoard() {
+        board = [];
+        for (let r = 0; r < ROWS; r++) {
+          const row = new Array(COLS).fill(null);
+          board.push(row);
+        }
+      }
+
+      function initGridDOM() {
+        boardGrid.innerHTML = "";
+        cells = [];
+        for (let r = 0; r < ROWS; r++) {
+          for (let c = 0; c < COLS; c++) {
+            const cell = document.createElement("div");
+            cell.className = "cell";
+            boardGrid.appendChild(cell);
+            cells.push(cell);
+          }
+        }
+      }
+
+      function drawBoard() {
+        for (let r = 0; r < ROWS; r++) {
+          for (let c = 0; c < COLS; c++) {
+            const idx = r * COLS + c;
+            const cell = cells[idx];
+            cell.className = "cell";
+            const val = board[r][c];
+            if (val) {
+              cell.classList.add("filled", COLORS[val]);
+            }
+          }
+        }
+      }
+
+      function drawCurrent() {
+        if (!current) return;
+        current.blocks.forEach(({x,y}) => {
+          if (y < 0) return;
+          const idx = y * COLS + x;
+          if (idx < 0 || idx >= cells.length) return;
+          const cell = cells[idx];
+          cell.className = "cell filled " + COLORS[current.type];
+        });
+      }
+
+      function spawnPiece() {
+        const types = Object.keys(SHAPES);
+        const type = types[Math.floor(Math.random() * types.length)];
+        const shape = SHAPES[type].map(([x,y]) => ({x, y}));
+
+        current = {
+          type,
+          blocks: shape.map(b => ({x: b.x + 3, y: b.y - 2})) // start near top centre
+        };
+
+        if (collides(0,0,current.blocks)) {
+          endGame();
+        }
+      }
+
+      function collides(dx, dy, blocks = current.blocks) {
+        for (const b of blocks) {
+          const x = b.x + dx;
+          const y = b.y + dy;
+          if (x < 0 || x >= COLS || y >= ROWS) return true;
+          if (y >= 0 && board[y][x]) return true;
+        }
+        return false;
+      }
+
+      function move(dx, dy) {
+        if (gameOver || !current) return;
+        if (!collides(dx, dy)) {
+          current.blocks.forEach(b => { b.x += dx; b.y += dy; });
+          redraw();
+        } else if (dy === 1) {
+          lockPiece();
+        }
+      }
+
+      function rotate() {
+        if (gameOver || !current) return;
+        const pivot = current.blocks[1];
+        const rotated = current.blocks.map(b => {
+          const relX = b.x - pivot.x;
+          const relY = b.y - pivot.y;
+          return {
+            x: pivot.x - relY,
+            y: pivot.y + relX
+          };
+        });
+        if (!collides(0,0,rotated)) {
+          current.blocks = rotated;
+          redraw();
+        }
+      }
+
+      function hardDrop() {
+        if (gameOver || !current) return;
+        let distance = 0;
+        while (!collides(0, distance + 1)) {
+          distance++;
+        }
+        current.blocks.forEach(b => { b.y += distance; });
+        redraw();
+        lockPiece();
+      }
+
+      function lockPiece() {
+        current.blocks.forEach(({x,y}) => {
+          if (y >= 0 && y < ROWS) {
+            board[y][x] = current.type;
+          }
+        });
+        clearLines();
+        spawnPiece();
+        redraw();
+      }
+
+      function clearLines() {
+        let cleared = 0;
+        for (let r = ROWS - 1; r >= 0; r--) {
+          if (board[r].every(cell => cell)) {
+            board.splice(r, 1);
+            board.unshift(new Array(COLS).fill(null));
+            cleared++;
+            r++;
+          }
+        }
+        if (cleared > 0) {
+          lines += cleared;
+          score += cleared * 100;
+          const newLevel = 1 + Math.floor(lines / 10);
+          if (newLevel !== level) {
+            level = newLevel;
+            dropInterval = Math.max(120, 700 - (level - 1) * 60);
+            restartTimer();
+          }
+          updateHUD();
+        }
+      }
+
+      function updateHUD() {
+        scoreEl.textContent = score;
+        linesEl.textContent = lines;
+        levelEl.textContent = level;
+      }
+
+      function redraw() {
+        drawBoard();
+        drawCurrent();
+      }
+
+      function step() {
+        move(0, 1);
+      }
+
+      function startTimer() {
+        if (dropTimer) clearInterval(dropTimer);
+        dropTimer = setInterval(step, dropInterval);
+      }
+
+      function restartTimer() {
+        startTimer();
+      }
+
+      function endGame() {
+        gameOver = true;
+        statusText.textContent = "Game over – press New Game to retry.";
+        statusText.classList.add("over");
+        if (dropTimer) clearInterval(dropTimer);
+      }
+
+      function newGame() {
+        gameOver = false;
+        statusText.textContent = "";
+        statusText.classList.remove("over");
+        score = 0;
+        lines = 0;
+        level = 1;
+        dropInterval = 700;
+        updateHUD();
+        initBoard();
+        drawBoard();
+        spawnPiece();
+        redraw();
+        startTimer();
+      }
+
+      // keyboard controls
+      window.addEventListener("keydown", (e) => {
+        const k = e.key;
+        if (["ArrowLeft","ArrowRight","ArrowDown","ArrowUp"," ","x","X"].includes(k)) {
+          e.preventDefault();
+        }
+        if (k === "ArrowLeft") move(-1, 0);
+        else if (k === "ArrowRight") move(1, 0);
+        else if (k === "ArrowDown") move(0, 1);      // soft drop
+        else if (k === "ArrowUp" || k === "x" || k === "X") rotate();
+        else if (k === " ") hardDrop();
+      });
+
+      // basic swipe for left/right/down
+      let startX = 0, startY = 0, swiping = false;
+      boardWrapper.addEventListener("touchstart", e => {
+        if (e.touches.length !== 1) return;
+        const t = e.touches[0];
+        startX = t.clientX;
+        startY = t.clientY;
+        swiping = true;
+      });
+      boardWrapper.addEventListener("touchmove", e => {
+        if (!swiping) return;
+        e.preventDefault();
+      }, { passive: false });
+      boardWrapper.addEventListener("touchend", e => {
+        if (!swiping) return;
+        swiping = false;
+        const t = e.changedTouches[0];
+        const dx = t.clientX - startX;
+        const dy = t.clientY - startY;
+        const absX = Math.abs(dx);
+        const absY = Math.abs(dy);
+        const threshold = 20;
+        if (absX < threshold && absY < threshold) return;
+        if (absX > absY) {
+          if (dx > 0) move(1,0);
+          else move(-1,0);
+        } else {
+          if (dy > 0) move(0,1);
+          else rotate();
+        }
+      });
+
+      newGameBtn.addEventListener("click", newGame);
+      window.addEventListener("resize", () => redraw());
+
+      // init
+      initBoard();
+      initGridDOM();
+      newGame();
+    })();
+  </script>
 </body>
 </html>
