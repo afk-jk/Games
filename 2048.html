@@ -6,14 +6,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     :root {
-      --bg: #faf8ef;
-      --board: #bbada0;
-      --board-inner: #cdc1b4;
-      --tile-empty: #cdc1b4;
-      --text-dark: #776e65;
-      --text-light: #f9f6f2;
-      --accent: #38bdf8;
+      --bg: #020617;
+      --bg-soft: #020617;
+      --panel: #020617;
+      --panel-soft: #020617;
+      --board: #020617;
+      --board-inner: #020617;
+      --tile-empty: #020617;
+      --text: #e5e7eb;
       --muted: #9ca3af;
+      --accent: #38bdf8;
     }
 
     * {
@@ -31,8 +33,8 @@
     body {
       min-height: 100vh;
       overflow: hidden;
-      background: radial-gradient(circle at top, #e4ded2 0, #faf8ef 55%);
-      color: var(--text-dark);
+      background: radial-gradient(circle at top, #1f2937 0, #020617 55%);
+      color: var(--text);
       display: flex;
       justify-content: center;
       padding: 16px;
@@ -57,10 +59,10 @@
     }
 
     .panel {
-      background: rgba(255, 255, 255, 0.9);
+      background: radial-gradient(circle at top, #020617 0, #020617 70%);
       border-radius: 18px;
-      border: 1px solid rgba(148, 163, 184, 0.45);
-      box-shadow: 0 14px 32px rgba(0, 0, 0, 0.08);
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      box-shadow: 0 16px 32px rgba(0, 0, 0, 0.7);
       padding: 12px;
     }
 
@@ -78,8 +80,8 @@
       justify-content: center;
       border-radius: 16px;
       border: 2px dashed rgba(148, 163, 184, 0.7);
-      background: rgba(248, 250, 252, 0.9);
-      color: #6b7280;
+      background: rgba(15, 23, 42, 0.8);
+      color: var(--muted);
       text-align: center;
       padding: 8px;
       font-size: 0.82rem;
@@ -114,36 +116,36 @@
     .back-link {
       text-decoration: none;
       font-size: 0.8rem;
-      color: #6b7280;
+      color: var(--muted);
       display: inline-flex;
       align-items: center;
       gap: 4px;
       padding: 4px 10px;
       border-radius: 999px;
       border: 1px solid rgba(148, 163, 184, 0.7);
-      background: rgba(248, 250, 252, 0.95);
+      background: rgba(15, 23, 42, 0.8);
     }
 
     .back-link:hover {
-      border-color: #38bdf8;
-      color: #111827;
+      border-color: var(--accent);
+      color: #f9fafb;
     }
 
     h1 {
-      font-size: 2.1rem;
-      letter-spacing: 0.04em;
+      font-size: 2rem;
+      letter-spacing: 0.06em;
     }
 
     .subtitle {
       font-size: 0.9rem;
-      color: #6b7280;
+      color: var(--muted);
       margin-bottom: 6px;
+      width: 100%;
     }
 
     .game-container {
       width: 100%;
       max-width: 520px;
-      background: transparent;
     }
 
     .score-bar {
@@ -162,10 +164,11 @@
     .score-box {
       min-width: 80px;
       padding: 6px 10px 5px;
-      border-radius: 6px;
-      background: #bbada0;
-      color: var(--text-light);
+      border-radius: 10px;
+      background: radial-gradient(circle at top, #1f2937 0, #020617 70%);
+      color: var(--text);
       text-align: center;
+      border: 1px solid rgba(148, 163, 184, 0.7);
     }
 
     .score-label {
@@ -173,6 +176,7 @@
       text-transform: uppercase;
       letter-spacing: 0.05em;
       opacity: 0.9;
+      color: var(--muted);
     }
 
     .score-value {
@@ -186,31 +190,31 @@
       outline: none;
       padding: 6px 12px;
       border-radius: 999px;
-      background: #8f7a66;
-      color: #f9f6f2;
+      background: linear-gradient(135deg, #38bdf8, #1d4ed8);
+      color: #f9fafb;
       cursor: pointer;
       font-weight: 600;
       font-size: 0.8rem;
-      box-shadow: 0 4px 0 #77675a;
+      box-shadow: 0 6px 16px rgba(37, 99, 235, 0.6);
       transition: transform 0.08s ease, box-shadow 0.08s ease, opacity 0.15s;
       white-space: nowrap;
     }
 
     .btn:disabled {
-      opacity: 0.4;
+      opacity: 0.35;
       cursor: default;
-      box-shadow: 0 4px 0 #77675a;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.7);
       transform: none;
     }
 
     .btn:hover:not(:disabled) {
       transform: translateY(-1px);
-      box-shadow: 0 5px 0 #77675a;
+      box-shadow: 0 10px 20px rgba(37, 99, 235, 0.8);
     }
 
     .btn:active:not(:disabled) {
-      transform: translateY(1px);
-      box-shadow: 0 2px 0 #77675a;
+      transform: translateY(0);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.5);
     }
 
     .controls-row {
@@ -224,15 +228,15 @@
 
     .controls-text {
       font-size: 0.8rem;
-      color: #6b7280;
+      color: var(--muted);
     }
 
     .controls-text span {
-      background: rgba(248, 250, 252, 0.9);
+      background: rgba(15, 23, 42, 0.85);
       border-radius: 999px;
       padding: 2px 8px;
       margin-right: 4px;
-      border: 1px solid rgba(209, 213, 219, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.6);
     }
 
     .powerups {
@@ -250,580 +254,4 @@
       position: absolute;
       right: 6px;
       top: 4px;
-      font-size: 0.7rem;
-      background: rgba(15, 23, 42, 0.9);
-      color: white;
-      border-radius: 999px;
-      padding: 1px 5px;
-    }
-
-    .board-outer {
-      width: 100%;
-      aspect-ratio: 1/1;
-      background: var(--board);
-      border-radius: 12px;
-      padding: 12px;
-      box-shadow: 0 12px 0 #9f8d80, 0 20px 24px rgba(0, 0, 0, 0.25);
-      position: relative;
-      overflow: hidden;
-      touch-action: none;
-      user-select: none;
-    }
-
-    .board-inner {
-      width: 100%;
-      height: 100%;
-      background: var(--board-inner);
-      border-radius: 6px;
-      padding: 8px;
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      grid-template-rows: repeat(4, 1fr);
-      gap: 8px;
-      position: relative;
-    }
-
-    .cell {
-      width: 100%;
-      height: 100%;
-      border-radius: 4px;
-      background: #cdc1b4;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .tile {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      font-size: 1.7rem;
-      border-radius: 4px;
-      color: var(--text-dark);
-      transform: scale(1);
-      transition: transform 0.08s ease-out, top 0.12s ease-out,
-        left 0.12s ease-out;
-    }
-
-    .tile.new {
-      transform: scale(0.2);
-      animation: pop 0.17s ease-out forwards;
-    }
-
-    @keyframes pop {
-      to {
-        transform: scale(1);
-      }
-    }
-
-    /* Tile colours - similar to classic but not identical */
-    .t2    { background: #eee4da; color: #776e65; }
-    .t4    { background: #ede0c8; color: #776e65; }
-    .t8    { background: #f2b179; color: #f9f6f2; }
-    .t16   { background: #f59563; color: #f9f6f2; }
-    .t32   { background: #f67c5f; color: #f9f6f2; }
-    .t64   { background: #f65e3b; color: #f9f6f2; }
-    .t128  { background: #edcf72; color: #f9f6f2; font-size: 1.5rem; }
-    .t256  { background: #edcc61; color: #f9f6f2; font-size: 1.5rem; }
-    .t512  { background: #edc850; color: #f9f6f2; font-size: 1.4rem; }
-    .t1024 { background: #edc53f; color: #f9f6f2; font-size: 1.3rem; }
-    .t2048 { background: #edc22e; color: #f9f6f2; font-size: 1.3rem; box-shadow: 0 0 20px rgba(237, 194, 46, 0.9); }
-
-    .status-row {
-      margin-top: 6px;
-      font-size: 0.8rem;
-      color: #6b7280;
-      display: flex;
-      justify-content: space-between;
-      gap: 8px;
-    }
-
-    .status-text {
-      font-weight: 600;
-    }
-
-    .status-text.win {
-      color: #22c55e;
-    }
-
-    .status-text.lose {
-      color: #f97316;
-    }
-  </style>
-</head>
-<body>
-  <div class="page">
-    <!-- Left ads -->
-    <aside class="panel ad-column">
-      <div class="ad-slot">
-        <div class="ad-label">Ad Slot #1</div>
-        <div class="ad-size">300 × 250</div>
-        <div>Place your banner here.</div>
-      </div>
-      <div class="ad-slot">
-        <div class="ad-label">Ad Slot #2</div>
-        <div class="ad-size">160 × 600</div>
-      </div>
-    </aside>
-
-    <!-- Game -->
-    <main class="panel main-panel">
-      <div class="top-bar">
-        <a class="back-link" href="index.html">← Back to games</a>
-        <h1>2048</h1>
-      </div>
-      <p class="subtitle">Join the numbers to get to the 2048 tile.</p>
-
-      <div class="game-container">
-        <div class="score-bar">
-          <div class="score-group">
-            <div class="score-box">
-              <div class="score-label">Score</div>
-              <div id="score" class="score-value">0</div>
-            </div>
-            <div class="score-box">
-              <div class="score-label">Best</div>
-              <div id="best" class="score-value">0</div>
-            </div>
-          </div>
-          <button id="newGameBtn" class="btn">New Game</button>
-        </div>
-
-        <div class="controls-row">
-          <div class="controls-text">
-            <span>← ↑ → ↓ / WASD</span>
-            <span>Swipe on mobile</span>
-          </div>
-          <div class="powerups">
-            <button id="undoBtn" class="btn power-btn">
-              Undo
-              <span id="undoCount" class="power-count">3</span>
-            </button>
-            <button id="clearBtn" class="btn power-btn">
-              Clear low
-              <span id="clearCount" class="power-count">2</span>
-            </button>
-            <button id="doubleBtn" class="btn power-btn">
-              Double tile
-              <span id="doubleCount" class="power-count">2</span>
-            </button>
-          </div>
-        </div>
-
-        <div class="board-outer" id="boardOuter">
-          <div class="board-inner" id="boardGrid">
-            <!-- 16 background cells -->
-          </div>
-        </div>
-
-        <div class="status-row">
-          <span id="statusText" class="status-text"></span>
-          <span>Tip: keep your biggest tile in a corner.</span>
-        </div>
-      </div>
-    </main>
-
-    <!-- Right ads -->
-    <aside class="panel ad-column">
-      <div class="ad-slot">
-        <div class="ad-label">Ad Slot #3</div>
-        <div class="ad-size">300 × 250</div>
-      </div>
-      <div class="ad-slot">
-        <div class="ad-label">Ad Slot #4</div>
-        <div class="ad-size">Wide</div>
-      </div>
-    </aside>
-  </div>
-
-  <script>
-    (function () {
-      const SIZE = 4;
-      const BEST_KEY = "arcade2048_best";
-
-      const boardGrid = document.getElementById("boardGrid");
-      const boardOuter = document.getElementById("boardOuter");
-      const scoreEl = document.getElementById("score");
-      const bestEl = document.getElementById("best");
-      const newGameBtn = document.getElementById("newGameBtn");
-      const undoBtn = document.getElementById("undoBtn");
-      const clearBtn = document.getElementById("clearBtn");
-      const doubleBtn = document.getElementById("doubleBtn");
-      const statusText = document.getElementById("statusText");
-
-      const undoCountEl = document.getElementById("undoCount");
-      const clearCountEl = document.getElementById("clearCount");
-      const doubleCountEl = document.getElementById("doubleCount");
-
-      let board = [];
-      let tiles = []; // for drawing / animation
-      let score = 0;
-      let best = Number(localStorage.getItem(BEST_KEY)) || 0;
-
-      let history = []; // for undos
-      const maxHistory = 20;
-      let undoTokens = 3;
-      let clearTokens = 2;
-      let doubleTokens = 2;
-      let isMoving = false;
-
-      bestEl.textContent = best;
-
-      function cloneBoard(src) {
-        return src.map(row => row.slice());
-      }
-
-      function initGrid() {
-        boardGrid.innerHTML = "";
-        for (let i = 0; i < SIZE * SIZE; i++) {
-          const cell = document.createElement("div");
-          cell.className = "cell";
-          boardGrid.appendChild(cell);
-        }
-      }
-
-      function createEmptyBoard() {
-        board = [];
-        for (let r = 0; r < SIZE; r++) {
-          const row = [];
-          for (let c = 0; c < SIZE; c++) row.push(0);
-          board.push(row);
-        }
-      }
-
-      function getEmptyCells() {
-        const out = [];
-        for (let r = 0; r < SIZE; r++) {
-          for (let c = 0; c < SIZE; c++) {
-            if (board[r][c] === 0) out.push({ r, c });
-          }
-        }
-        return out;
-      }
-
-      function spawnTile(isStart = false) {
-        const empties = getEmptyCells();
-        if (empties.length === 0) return;
-        const { r, c } = empties[Math.floor(Math.random() * empties.length)];
-        board[r][c] = Math.random() < 0.9 ? 2 : 4;
-        drawBoard([{ r, c }]); // new tile animation
-      }
-
-      function updateScore(delta) {
-        score += delta;
-        scoreEl.textContent = score;
-        if (score > best) {
-          best = score;
-          bestEl.textContent = best;
-          localStorage.setItem(BEST_KEY, best);
-        }
-      }
-
-      function drawBoard(newTiles = []) {
-        const cellSize = boardGrid.clientWidth;
-        const cellWidth = cellSize / SIZE;
-        const cellHeight = cellWidth;
-
-        // Remove previous tiles
-        const oldTiles = boardGrid.querySelectorAll(".tile");
-        oldTiles.forEach(t => t.remove());
-
-        for (let r = 0; r < SIZE; r++) {
-          for (let c = 0; c < SIZE; c++) {
-            const val = board[r][c];
-            if (!val) continue;
-            const tile = document.createElement("div");
-            tile.className = "tile t" + val;
-            tile.textContent = val;
-            tile.style.width = cellWidth - 2 + "px";
-            tile.style.height = cellHeight - 2 + "px";
-
-            tile.style.left = c * (cellWidth) + 1 + "px";
-            tile.style.top = r * (cellHeight) + 1 + "px";
-
-            if (newTiles.some(p => p.r === r && p.c === c)) {
-              tile.classList.add("new");
-            }
-
-            boardGrid.appendChild(tile);
-          }
-        }
-      }
-
-      function saveState() {
-        history.push({
-          board: cloneBoard(board),
-          score,
-          message: statusText.textContent,
-          statusClass: statusText.className
-        });
-        if (history.length > maxHistory) history.shift();
-      }
-
-      function restoreState() {
-        if (!history.length || undoTokens <= 0) return;
-        const state = history.pop();
-        board = cloneBoard(state.board);
-        score = state.score;
-        scoreEl.textContent = score;
-        statusText.textContent = state.message;
-        statusText.className = state.statusClass || "status-text";
-        undoTokens--;
-        updatePowerUI();
-        drawBoard([]);
-      }
-
-      function slideRow(row) {
-        const nonZero = row.filter(v => v !== 0);
-        const result = [];
-        let gained = 0;
-
-        for (let i = 0; i < nonZero.length; i++) {
-          if (nonZero[i] === nonZero[i + 1]) {
-            const merged = nonZero[i] * 2;
-            result.push(merged);
-            gained += merged;
-            i++;
-          } else {
-            result.push(nonZero[i]);
-          }
-        }
-        while (result.length < SIZE) result.push(0);
-        return { row: result, scoreGained: gained };
-      }
-
-      function rotateBoard(times) {
-        for (let t = 0; t < times; t++) {
-          const newBoard = [];
-          for (let c = 0; c < SIZE; c++) {
-            const newRow = [];
-            for (let r = SIZE - 1; r >= 0; r--) {
-              newRow.push(board[r][c]);
-            }
-            newBoard.push(newRow);
-          }
-          board = newBoard;
-        }
-      }
-
-      function boardsEqual(a, b) {
-        for (let r = 0; r < SIZE; r++) {
-          for (let c = 0; c < SIZE; c++) {
-            if (a[r][c] !== b[r][c]) return false;
-          }
-        }
-        return true;
-      }
-
-      function move(direction) {
-        if (isMoving) return;
-        let rot = 0;
-        if (direction === "left") rot = 0;
-        else if (direction === "up") rot = 1;
-        else if (direction === "right") rot = 2;
-        else if (direction === "down") rot = 3;
-        else return;
-
-        const beforeBoard = cloneBoard(board);
-        const beforeScore = score;
-
-        rotateBoard(rot);
-
-        let totalGained = 0;
-        for (let r = 0; r < SIZE; r++) {
-          const { row: newRow, scoreGained } = slideRow(board[r]);
-          board[r] = newRow;
-          totalGained += scoreGained;
-        }
-
-        rotateBoard((4 - rot) % 4);
-
-        if (boardsEqual(beforeBoard, board)) {
-          return; // no move
-        }
-
-        saveState();
-        updateScore(totalGained);
-
-        isMoving = true;
-        const emptiesBefore = getEmptyCells().length;
-        spawnTile();
-        const emptiesAfter = getEmptyCells().length;
-        // new tile already drawn, but refresh all to smooth
-        setTimeout(() => {
-          drawBoard([]);
-          isMoving = false;
-          checkGameState();
-        }, 110);
-      }
-
-      function hasMovesAvailable() {
-        if (getEmptyCells().length > 0) return true;
-        for (let r = 0; r < SIZE; r++) {
-          for (let c = 0; c < SIZE; c++) {
-            const v = board[r][c];
-            if (r < SIZE - 1 && board[r + 1][c] === v) return true;
-            if (c < SIZE - 1 && board[r][c + 1] === v) return true;
-          }
-        }
-        return false;
-      }
-
-      function checkGameState() {
-        let has2048 = false;
-        for (let r = 0; r < SIZE; r++) {
-          for (let c = 0; c < SIZE; c++) {
-            if (board[r][c] === 2048) has2048 = true;
-          }
-        }
-        if (has2048) {
-          statusText.textContent = "You reached 2048! 🎉";
-          statusText.className = "status-text win";
-        } else if (!hasMovesAvailable()) {
-          statusText.textContent = "No moves left. Game over.";
-          statusText.className = "status-text lose";
-        } else {
-          statusText.textContent = "";
-          statusText.className = "status-text";
-        }
-      }
-
-      function updatePowerUI() {
-        undoCountEl.textContent = undoTokens;
-        clearCountEl.textContent = clearTokens;
-        doubleCountEl.textContent = doubleTokens;
-
-        undoBtn.disabled = undoTokens <= 0 || history.length === 0;
-        clearBtn.disabled = clearTokens <= 0 || getNonZero().length === 0;
-        doubleBtn.disabled = doubleTokens <= 0 || getNonZero().length === 0;
-      }
-
-      function getNonZero(filterFn) {
-        const arr = [];
-        for (let r = 0; r < SIZE; r++) {
-          for (let c = 0; c < SIZE; c++) {
-            if (board[r][c] > 0) {
-              if (!filterFn || filterFn(board[r][c])) {
-                arr.push({ r, c, v: board[r][c] });
-              }
-            }
-          }
-        }
-        return arr;
-      }
-
-      function useClearLow() {
-        if (clearTokens <= 0) return;
-        const lowTiles = getNonZero(v => v <= 8);
-        const candidates = lowTiles.length ? lowTiles : getNonZero();
-        if (!candidates.length) return;
-        saveState();
-        const chosen = candidates[Math.floor(Math.random() * candidates.length)];
-        board[chosen.r][chosen.c] = 0;
-        clearTokens--;
-        spawnTile();
-        updatePowerUI();
-        checkGameState();
-      }
-
-      function useDoubleTile() {
-        if (doubleTokens <= 0) return;
-        const tiles = getNonZero();
-        if (!tiles.length) return;
-        saveState();
-        const chosen = tiles[Math.floor(Math.random() * tiles.length)];
-        board[chosen.r][chosen.c] *= 2;
-        updateScore(board[chosen.r][chosen.c]);
-        doubleTokens--;
-        drawBoard([{ r: chosen.r, c: chosen.c }]);
-        updatePowerUI();
-        checkGameState();
-      }
-
-      function newGame() {
-        score = 0;
-        scoreEl.textContent = "0";
-        statusText.textContent = "";
-        statusText.className = "status-text";
-
-        undoTokens = 3;
-        clearTokens = 2;
-        doubleTokens = 2;
-        history = [];
-
-        createEmptyBoard();
-        drawBoard([]);
-        spawnTile(true);
-        spawnTile(true);
-        updatePowerUI();
-      }
-
-      // keyboard controls
-      window.addEventListener("keydown", (e) => {
-        const k = e.key;
-        if (["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "a", "A", "d", "D", "w", "W", "s", "S"].includes(k)) {
-          e.preventDefault();
-        }
-        if (k === "ArrowLeft" || k === "a" || k === "A") move("left");
-        else if (k === "ArrowRight" || k === "d" || k === "D") move("right");
-        else if (k === "ArrowUp" || k === "w" || k === "W") move("up");
-        else if (k === "ArrowDown" || k === "s" || k === "S") move("down");
-      });
-
-      // swipe controls
-      let touchStartX = 0;
-      let touchStartY = 0;
-      let touchActive = false;
-
-      boardOuter.addEventListener("touchstart", (e) => {
-        if (e.touches.length !== 1) return;
-        const t = e.touches[0];
-        touchStartX = t.clientX;
-        touchStartY = t.clientY;
-        touchActive = true;
-      });
-
-      boardOuter.addEventListener("touchmove", (e) => {
-        if (!touchActive) return;
-        e.preventDefault();
-      }, { passive: false });
-
-      boardOuter.addEventListener("touchend", (e) => {
-        if (!touchActive) return;
-        touchActive = false;
-        const t = e.changedTouches[0];
-        const dx = t.clientX - touchStartX;
-        const dy = t.clientY - touchStartY;
-        const absX = Math.abs(dx);
-        const absY = Math.abs(dy);
-        const threshold = 25;
-        if (absX < threshold && absY < threshold) return;
-        if (absX > absY) {
-          move(dx > 0 ? "right" : "left");
-        } else {
-          move(dy > 0 ? "down" : "up");
-        }
-      });
-
-      newGameBtn.addEventListener("click", newGame);
-      undoBtn.addEventListener("click", () => {
-        restoreState();
-        updatePowerUI();
-      });
-      clearBtn.addEventListener("click", () => {
-        useClearLow();
-      });
-      doubleBtn.addEventListener("click", () => {
-        useDoubleTile();
-      });
-
-      // init
-      initGrid();
-      newGame();
-      window.addEventListener("resize", () => drawBoard([]));
-    })();
-  </script>
-</body>
-</html>
+      font-size: 0.7rem
