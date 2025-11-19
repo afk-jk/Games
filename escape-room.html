@@ -5,8 +5,7 @@
   <title>Mini Escape Room – 10 Levels</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- Optional: your AdSense script goes here, above the style tag -->
-  <!--
+  <!-- Optional: your AdSense script goes here
   <script async
     src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1522584826215697"
     crossorigin="anonymous"></script>
@@ -68,8 +67,8 @@
       text-decoration: none;
       padding: 3px 8px 3px 6px;
       border-radius: 999px;
-      border: 1px solid rgba(148,163,184,0.4);
-      background: rgba(15,23,42,0.95);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      background: rgba(15, 23, 42, 0.95);
       display: inline-flex;
       align-items: center;
       gap: 4px;
@@ -92,7 +91,7 @@
       gap: 8px;
       flex-wrap: wrap;
       font-size: 0.8rem;
-      padding-left: 110px; /* to avoid overlapping back button */
+      padding-left: 110px; /* avoid overlapping back button */
     }
 
     .title {
@@ -119,7 +118,7 @@
     .room {
       position: relative;
       width: 100%;
-      padding-top: 56.25%; /* 16:9 ratio */
+      padding-top: 56.25%; /* 16:9 */
       background: linear-gradient(#020617 0%, #020617 40%, #0f172a 40%, #111827 100%);
     }
 
@@ -149,12 +148,11 @@
       transform: translateY(0);
     }
 
-    /* Door */
+    /* Door, desk, etc – sizes only; positions are set per-level in JS */
+
     .door {
       width: 16%;
       height: 40%;
-      right: 8%;
-      top: 18%;
       background: linear-gradient(#0f172a, #020617);
       border-radius: 6px;
       box-shadow: inset 0 0 0 2px #111827;
@@ -183,12 +181,9 @@
       box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.9);
     }
 
-    /* Desk */
     .desk {
       width: 30%;
       height: 18%;
-      left: 18%;
-      top: 42%;
       background: #111827;
       border-radius: 7px 7px 3px 3px;
       box-shadow: 0 10px 0 #020617;
@@ -205,12 +200,9 @@
       border-radius: 7px 7px 0 0;
     }
 
-    /* Lockbox on desk */
     .box {
       width: 30%;
-      height: 40%;
-      left: 56%;
-      top: 45%;
+      height: 18%;
       background: linear-gradient(#111827, #020617);
       border-radius: 6px;
       box-shadow: 0 4px 0 #020617;
@@ -240,12 +232,9 @@
       box-shadow: 0 0 0 1px rgba(148, 163, 184, 0.8);
     }
 
-    /* Painting */
     .painting {
       width: 22%;
       height: 20%;
-      left: 14%;
-      top: 10%;
       background: #020617;
       border-radius: 10px;
       box-shadow: 0 0 0 3px #1e293b, 0 0 0 6px #b45309;
@@ -270,12 +259,9 @@
       transform: translateX(-50%) rotate(-8deg);
     }
 
-    /* Plant */
     .plant {
       width: 10%;
       height: 24%;
-      left: 4%;
-      top: 44%;
     }
 
     .plant-pot {
@@ -312,12 +298,9 @@
       box-shadow: -10px -18px 0 #22c55e, 10px -18px 0 #22c55e;
     }
 
-    /* Rug */
     .rug {
       width: 32%;
       height: 12%;
-      left: 32%;
-      bottom: 4%;
       background: radial-gradient(circle at 20% 20%, #4b5563, #020617 65%);
       border-radius: 999px;
       box-shadow: 0 0 0 2px #0b1120;
@@ -331,12 +314,9 @@
       border: 1px dashed rgba(148, 163, 184, 0.6);
     }
 
-    /* Shelf */
     .shelf {
       width: 18%;
       height: 26%;
-      right: 28%;
-      top: 13%;
       background: #111827;
       border-radius: 5px;
       box-shadow: 0 6px 0 #020617;
@@ -398,19 +378,16 @@
       border-radius: 4px;
       box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.4);
       transform: rotate(-3deg);
-    }
-
-    .note::before {
-      content: "3 • 1 • 4";
-      position: absolute;
-      left: 14%;
-      top: 24%;
-      font-family: "Courier New", monospace;
       font-size: 0.7rem;
       color: #0f172a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: "Courier New", monospace;
     }
 
     /* Key */
+
     .key {
       position: absolute;
       width: 36px;
@@ -747,7 +724,7 @@
     <div class="dialog">
       <div class="dialog-title">Escape Room – Choose Level</div>
       <div class="dialog-text">
-        Each level reuses the same room but changes the clues and the code. They get
+        Each level uses a different room layout and a new code. They get
         a little trickier as you go.
       </div>
       <div class="level-grid" id="levelGrid"></div>
@@ -781,12 +758,13 @@
       const levelGrid = document.getElementById("levelGrid");
       const closeLevelSelectBtn = document.getElementById("closeLevelSelectBtn");
 
-      const keyDefaultNote = document.querySelector(".note");
+      const noteEl = document.querySelector(".note");
+
+      /* ---------- LEVEL DATA (same as before) ---------- */
 
       const levels = [
         {
           id: 1,
-          name: "Level 1",
           label: "Tutorial",
           code: "314",
           intro:
@@ -803,11 +781,11 @@
           plantMsg:
             "No key in the soil – at least not on this level.",
           boxHint:
-            "The keypad waits for 3 digits. The painting was very direct, wasn’t it?"
+            "The keypad waits for 3 digits. The painting was very direct, wasn’t it?",
+          noteText: "3 • 1 • 4"
         },
         {
           id: 2,
-          name: "Level 2",
           label: "Simple Code",
           code: "258",
           intro:
@@ -824,11 +802,11 @@
           plantMsg:
             "You dig a little in the pot. No key – but the plant looks offended.",
           boxHint:
-            "Three digits, middle column, top to bottom…"
+            "Three digits, middle column, top to bottom…",
+          noteText: "2 • 5 • 8"
         },
         {
           id: 3,
-          name: "Level 3",
           label: "Mathy",
           code: "739",
           intro:
@@ -846,11 +824,11 @@
           plantMsg:
             "The plant tag just says: “Don’t overthink it.”",
           boxHint:
-            "You’ve pretty much seen 7, 3, and 9 everywhere. The order isn’t subtle."
+            "You’ve pretty much seen 7, 3, and 9 everywhere. The order isn’t subtle.",
+          noteText: "7 ? 9"
         },
         {
           id: 4,
-          name: "Level 4",
           label: "Pi-ish",
           code: "159",
           intro:
@@ -868,11 +846,11 @@
           plantMsg:
             "The plant label: “Water every 1, then 5, then 9 days – got it?”",
           boxHint:
-            "All of them keep pointing at the same three digits after 3.14."
+            "All of them keep pointing at the same three digits after 3.14.",
+          noteText: "π → 1 5 9"
         },
         {
           id: 5,
-          name: "Level 5",
           label: "Hidden Order",
           code: "427",
           intro:
@@ -884,17 +862,17 @@
           shelfMsg:
             "The note says: “Second digit: books in the tallest stack on this shelf.” (There are 2.)",
           deskMsg:
-            "Carved underneath the desk: “Third digit: number of desk legs minus one.” (3 legs visible + 1 imaginary = 4? But there are 3 drawn, so 3–? The scribble leaves 7.)",
+            "Carved underneath the desk: “Third digit: number of desk legs minus one.” The math is messy, but you see a scrawled 7.",
           rugMsg:
             "The rug’s pattern has 7 spokes reaching the centre.",
           plantMsg:
             "A sticky note on the pot: “Rug decides the last digit.”",
           boxHint:
-            "Corners (4), tallest stack (2), rug spokes (7): 4-2-7."
+            "Corners (4), tallest stack (2), rug spokes (7): 4-2-7.",
+          noteText: "1st: frame • 2nd: shelf • 3rd: rug"
         },
         {
           id: 6,
-          name: "Level 6",
           label: "Colour Code",
           code: "836",
           intro:
@@ -912,11 +890,11 @@
           plantMsg:
             "Plant tag: “Orange, Blue, Green. That order again.”",
           boxHint:
-            "Orange = 8, Blue = 3, Green = 6 → 836."
+            "Orange = 8, Blue = 3, Green = 6 → 836.",
+          noteText: "O=8  B=3  G=6"
         },
         {
           id: 7,
-          name: "Level 7",
           label: "Clockwork",
           code: "745",
           intro:
@@ -934,11 +912,11 @@
           plantMsg:
             "Plant label: “The rug keeps time for the last digit.”",
           boxHint:
-            "First digit 7 (painting), second 4 (desk clock), third 5 (rug hand)."
+            "First digit 7 (painting), second 4 (desk clock), third 5 (rug hand).",
+          noteText: "Paint=1st • Desk=2nd • Rug=3rd"
         },
         {
           id: 8,
-          name: "Level 8",
           label: "Binary-ish",
           code: "568",
           intro:
@@ -956,11 +934,11 @@
           plantMsg:
             "Plant tag: “They’re not codewords. They’re literally just the numbers.”",
           boxHint:
-            "Everything repeats 5, 6, and 8 in that order."
+            "Everything repeats 5, 6, and 8 in that order.",
+          noteText: "|||||  ||||||  |||||||"
         },
         {
           id: 9,
-          name: "Level 9",
           label: "Combined Clues",
           code: "902",
           intro:
@@ -978,11 +956,11 @@
           plantMsg:
             "Plant tag: “I’m the middle digit: I proudly show nothing at all.” (0)",
           boxHint:
-            "Skyscrapers (9), plant shows 0, rug rings (2) → 9-0-2."
+            "Skyscrapers (9), plant shows 0, rug rings (2) → 9-0-2.",
+          noteText: "9 ? 2"
         },
         {
           id: 10,
-          name: "Level 10",
           label: "Final",
           code: "741",
           intro:
@@ -1000,11 +978,117 @@
           plantMsg:
             "Plant label: “Sun, shelf, desk – 1-2-3 digits in that order.”",
           boxHint:
-            "Sun rays (7), green books (4), “final” desk leg (1) → 741."
+            "Sun rays (7), green books (4), “final” desk leg (1) → 741.",
+          noteText: "Sun • Shelf • Desk"
         }
       ];
 
-      let currentLevelIndex = 0; // 0-based
+      /* ---------- LAYOUTS: different map for each level ---------- */
+
+      const layouts = [
+        // Level 1 – original-ish layout
+        {
+          door:  { top: "18%", right: "8%" },
+          desk:  { top: "42%", left: "18%" },
+          box:   { top: "44%", left: "52%" },
+          painting: { top: "10%", left: "14%" },
+          shelf: { top: "13%", right: "28%" },
+          plant: { top: "44%", left: "4%" },
+          rug:   { bottom: "4%", left: "32%" }
+        },
+        // Level 2 – door left, desk right
+        {
+          door:  { top: "18%", left: "6%" },
+          desk:  { top: "43%", right: "14%" },
+          box:   { top: "46%", right: "18%" },
+          painting: { top: "11%", right: "30%" },
+          shelf: { top: "10%", left: "26%" },
+          plant: { top: "46%", right: "4%" },
+          rug:   { bottom: "6%", right: "30%" }
+        },
+        // Level 3 – desk more central
+        {
+          door:  { top: "16%", right: "5%" },
+          desk:  { top: "45%", left: "30%" },
+          box:   { top: "43%", left: "52%" },
+          painting: { top: "8%", left: "6%" },
+          shelf: { top: "8%", right: "10%" },
+          plant: { top: "48%", left: "6%" },
+          rug:   { bottom: "5%", left: "22%" }
+        },
+        // Level 4 – door lower, painting centre
+        {
+          door:  { top: "24%", left: "8%" },
+          desk:  { top: "43%", right: "20%" },
+          box:   { top: "45%", right: "24%" },
+          painting: { top: "8%", left: "38%" },
+          shelf: { top: "12%", right: "6%" },
+          plant: { top: "46%", left: "4%" },
+          rug:   { bottom: "3%", left: "40%" }
+        },
+        // Level 5 – desk far left, door far right
+        {
+          door:  { top: "20%", right: "4%" },
+          desk:  { top: "44%", left: "6%" },
+          box:   { top: "43%", left: "28%" },
+          painting: { top: "9%", right: "12%" },
+          shelf: { top: "12%", left: "40%" },
+          plant: { top: "48%", right: "8%" },
+          rug:   { bottom: "4%", left: "26%" }
+        },
+        // Level 6 – door centre-ish, rug left
+        {
+          door:  { top: "16%", left: "40%" },
+          desk:  { top: "44%", right: "8%" },
+          box:   { top: "44%", right: "12%" },
+          painting: { top: "7%", left: "8%" },
+          shelf: { top: "8%", right: "24%" },
+          plant: { top: "46%", left: "4%" },
+          rug:   { bottom: "4%", left: "10%" }
+        },
+        // Level 7 – desk centre, door right
+        {
+          door:  { top: "20%", right: "10%" },
+          desk:  { top: "44%", left: "35%" },
+          box:   { top: "46%", left: "40%" },
+          painting: { top: "8%", left: "6%" },
+          shelf: { top: "12%", right: "8%" },
+          plant: { top: "46%", right: "4%" },
+          rug:   { bottom: "4%", left: "28%" }
+        },
+        // Level 8 – door left, shelf centre
+        {
+          door:  { top: "18%", left: "4%" },
+          desk:  { top: "45%", left: "26%" },
+          box:   { top: "42%", left: "30%" },
+          painting: { top: "10%", right: "10%" },
+          shelf: { top: "8%", left: "40%" },
+          plant: { top: "46%", right: "6%" },
+          rug:   { bottom: "5%", right: "24%" }
+        },
+        // Level 9 – door low right, rug centre
+        {
+          door:  { top: "24%", right: "6%" },
+          desk:  { top: "43%", left: "10%" },
+          box:   { top: "44%", left: "14%" },
+          painting: { top: "7%", left: "32%" },
+          shelf: { top: "12%", right: "20%" },
+          plant: { top: "48%", left: "4%" },
+          rug:   { bottom: "4%", left: "34%" }
+        },
+        // Level 10 – final: door centre-right, desk left
+        {
+          door:  { top: "18%", right: "20%" },
+          desk:  { top: "43%", left: "8%" },
+          box:   { top: "45%", left: "12%" },
+          painting: { top: "8%", right: "8%" },
+          shelf: { top: "9%", left: "24%" },
+          plant: { top: "47%", right: "6%" },
+          rug:   { bottom: "4%", left: "30%" }
+        }
+      ];
+
+      let currentLevelIndex = 0;
       let currentLevel = levels[0];
 
       const state = {
@@ -1017,6 +1101,28 @@
         messageEl.innerHTML = html;
       }
 
+      function applyLayoutForCurrentLevel() {
+        const layout = layouts[currentLevelIndex];
+        if (!layout) return;
+
+        function apply(selector, cfg) {
+          const el = document.querySelector(selector);
+          if (!el || !cfg) return;
+          el.style.top = cfg.top || "";
+          el.style.left = cfg.left || "";
+          el.style.right = cfg.right || "";
+          el.style.bottom = cfg.bottom || "";
+        }
+
+        apply(".door", layout.door);
+        apply(".desk", layout.desk);
+        apply(".box", layout.box);
+        apply(".painting", layout.painting);
+        apply(".shelf", layout.shelf);
+        apply(".plant", layout.plant);
+        apply(".rug", layout.rug);
+      }
+
       function resetGame(keepDashboardOpen) {
         state.boxUnlocked = false;
         state.keyPickedUp = false;
@@ -1025,10 +1131,14 @@
         keyEl.style.display = "none";
         invSlotEl.innerHTML = "";
 
-        keyDefaultNote.textContent = currentLevel.id === 1 ? "3 • 1 • 4" : "";
         levelTitleEl.textContent =
           "Mini Escape Room – Level " + currentLevel.id;
         hintPillEl.textContent = currentLevel.hint;
+
+        // Update little note text
+        noteEl.textContent = currentLevel.noteText || "";
+
+        applyLayoutForCurrentLevel();
 
         if (!keepDashboardOpen) {
           setMessage(currentLevel.intro);
@@ -1075,9 +1185,10 @@
         levelSelectOverlay.classList.remove("visible");
       }
 
-      // Position key visually on top of box
       function positionKeyOnBox() {
         const box = document.querySelector('[data-item="box"]');
+        if (!box) return;
+
         const roomRect = box.parentElement.getBoundingClientRect();
         const boxRect = box.getBoundingClientRect();
         const keyRect = keyEl.getBoundingClientRect();
@@ -1183,7 +1294,7 @@
       nextLevelBtn.addEventListener("click", () => {
         hideWinOverlay();
         if (currentLevel.id < levels.length) {
-          currentLevelIndex = currentLevel.id; // move to next
+          currentLevelIndex = currentLevel.id;
           currentLevel = levels[currentLevelIndex];
           resetGame(false);
         }
@@ -1193,8 +1304,6 @@
         hideWinOverlay();
         showLevelSelectOverlay();
       });
-
-      // Level select dashboard
 
       function updateLevelGridButtons() {
         levelGrid.innerHTML = "";
@@ -1239,7 +1348,7 @@
         }
       });
 
-      // Initialise dashboard and game state
+      // Initialise
       currentLevel = levels[currentLevelIndex];
       updateLevelGridButtons();
       resetGame(true);
