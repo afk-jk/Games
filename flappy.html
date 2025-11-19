@@ -2,15 +2,14 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<title>Flappy Sky – Mini Games Arcade</title>
+<title>Flappy Pig Rise – Mini Games Arcade</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <style>
   :root {
-    --bg1: #0ea5e9;
-    --bg2: #0369a1;
-    --bird: #facc15;
-    --pipe: #1e293b;
+    --panel-bg: rgba(2, 6, 23, 0.65);
+    --border: rgba(255, 255, 255, 0.2);
     --text: #e5e7eb;
+    --muted: #9ca3af;
   }
 
   * {
@@ -21,7 +20,7 @@
   }
 
   body {
-    background: radial-gradient(circle at top, var(--bg1), var(--bg2));
+    background: radial-gradient(circle at top, #0ea5e9, #020617 60%);
     min-height: 100vh;
     display: flex;
     justify-content: center;
@@ -32,27 +31,59 @@
   .panel {
     width: 100%;
     max-width: 450px;
-    background: rgba(2,6,23,0.55);
+    background: var(--panel-bg);
     border-radius: 14px;
     padding: 10px;
-    border: 1px solid rgba(255,255,255,0.18);
+    border: 1px solid var(--border);
     box-shadow: 0 8px 24px rgba(0,0,0,0.45);
+    color: var(--text);
+    position: relative;
   }
 
-  canvas {
-    width: 100%;
-    height: auto;
-    display: block;
-    background: linear-gradient(#0ea5e9, #0369a1);
-    border-radius: 10px;
-  }
-
-  .top {
+  .top-row {
     display: flex;
     justify-content: space-between;
-    color: var(--text);
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+  }
+
+  .stats {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    font-size: 0.86rem;
+  }
+
+  .pill {
+    padding: 3px 8px;
+    border-radius: 999px;
+    border: 1px solid rgba(148, 163, 184, 0.7);
+    background: rgba(15, 23, 42, 0.9);
+  }
+
+  .controls-row {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
     margin-bottom: 6px;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
+  }
+
+  .controls-row label {
+    font-size: 0.76rem;
+    color: var(--muted);
+    margin-right: 3px;
+  }
+
+  select {
+    background: #020617;
+    color: var(--text);
+    border-radius: 8px;
+    border: 1px solid rgba(148,163,184,0.8);
+    padding: 2px 6px;
+    font-size: 0.78rem;
   }
 
   .btn {
@@ -63,171 +94,603 @@
     color: #020617;
     font-weight: 600;
     cursor: pointer;
+    font-size: 0.8rem;
     transition: 0.15s;
+    white-space: nowrap;
   }
 
   .btn:hover {
     background: #0ea5e9;
+  }
+
+  .btn-secondary {
+    background: rgba(15,23,42,0.9);
+    color: var(--text);
+    border: 1px solid rgba(148,163,184,0.7);
+  }
+
+  .btn-secondary:hover {
+    background: rgba(30,64,175,0.9);
+  }
+
+  .hint {
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+
+  canvas {
+    width: 100%;
+    height: auto;
+    display: block;
+    background: #0ea5e9;
+    border-radius: 10px;
+  }
+
+  /* SHOP OVERLAY */
+  .shop-overlay {
+    position: absolute;
+    inset: 10px;
+    background: rgba(15,23,42,0.98);
+    border-radius: 12px;
+    border: 1px solid rgba(148,163,184,0.9);
+    box-shadow: 0 18px 40px rgba(0,0,0,0.8);
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 10;
+  }
+
+  .shop-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .shop-title {
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  .shop-coins {
+    font-size: 0.85rem;
+    color: #facc15;
+  }
+
+  .shop-list {
+    margin-top: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    overflow-y: auto;
+    max-height: 260px;
+  }
+
+  .shop-item {
+    border-radius: 10px;
+    border: 1px solid rgba(55,65,81,0.9);
+    background: radial-gradient(circle at top, #020617, #020617 70%);
+    padding: 6px 8px;
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    align-items: center;
+    font-size: 0.8rem;
+  }
+
+  .shop-item-main {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .shop-name {
+    font-weight: 600;
+    display: flex;
+    gap: 4px;
+    align-items: center;
+  }
+
+  .shop-desc {
+    font-size: 0.74rem;
+    color: var(--muted);
+  }
+
+  .shop-status {
+    font-size: 0.74rem;
+    color: var(--muted);
+  }
+
+  .shop-item-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+  }
+
+  .shop-price {
+    font-size: 0.78rem;
+    color: #facc15;
+  }
+
+  .badge {
+    padding: 1px 6px;
+    border-radius: 999px;
+    border: 1px solid rgba(148,163,184,0.7);
+    font-size: 0.7rem;
+  }
+
+  .badge-owned {
+    border-color: #22c55e;
+    color: #bbf7d0;
+  }
+
+  .badge-equipped {
+    border-color: #38bdf8;
+    color: #bae6fd;
+  }
+
+  .hidden {
+    display: none;
   }
 </style>
 </head>
 <body>
 
 <div class="panel">
-  <div class="top">
-    <span>Score: <span id="score">0</span></span>
+  <div class="top-row">
+    <div class="stats">
+      <span class="pill">Score: <span id="score">0</span></span>
+      <span class="pill">Best: <span id="best">0</span></span>
+      <span class="pill">Coins: <span id="coins">0</span> 🪙</span>
+    </div>
     <button class="btn" id="restartBtn">Restart</button>
   </div>
+
+  <div class="controls-row">
+    <div>
+      <label for="skinSelect">Pig skin:</label>
+      <select id="skinSelect"></select>
+    </div>
+    <button class="btn-secondary" id="shopBtn">Open Shop</button>
+    <button class="btn" id="modeBtn">Mode: Day 🌞</button>
+  </div>
+
+  <div class="hint">
+    Controls: Space / ↑ / tap to flap. Avoid pipes, grab coins, unlock skins in the shop.
+  </div>
+
   <canvas id="game" width="360" height="540"></canvas>
+
+  <!-- SHOP OVERLAY -->
+  <div id="shopOverlay" class="shop-overlay hidden">
+    <div class="shop-header">
+      <div>
+        <div class="shop-title">Pig Skin Shop</div>
+        <div class="shop-status">Earn coins in-game and spend them here.</div>
+      </div>
+      <div class="shop-coins">Coins: <span id="shopCoins">0</span> 🪙</div>
+      <button class="btn-secondary" id="closeShopBtn">Close</button>
+    </div>
+    <div id="shopList" class="shop-list"></div>
+  </div>
 </div>
 
 <script>
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
+const scoreEl = document.getElementById("score");
+const bestEl = document.getElementById("best");
+const coinsEl = document.getElementById("coins");
+const shopCoinsEl = document.getElementById("shopCoins");
+const restartBtn = document.getElementById("restartBtn");
+const skinSelect = document.getElementById("skinSelect");
+const modeBtn = document.getElementById("modeBtn");
+const shopBtn = document.getElementById("shopBtn");
+const shopOverlay = document.getElementById("shopOverlay");
+const closeShopBtn = document.getElementById("closeShopBtn");
+const shopListEl = document.getElementById("shopList");
 
-let bird, pipes, score, alive, paused, best;
+// GAME STATE
+let pig, pipes, coinsOnField, score, alive, paused;
+let best = 0;
+let coins = 0;
+let mode = "day";           // "day" | "night"
+let lastTime = performance.now();
+
+// physics tuned for flappy feel
 const gravity = 0.38;
 const jump = -6.2;
 const pipeGap = 150;
 const pipeWidth = 60;
 const pipeSpeed = 2.7;
 
-let lastTime = performance.now();
+// wing animation
+let flapPhase = 0;
+let flapSpeed = 0.3;        // base speed
+let flapBoostTimer = 0;     // "frames" of boosted flap animation
 
-best = Number(localStorage.getItem("flappyBest")) || 0;
+// SKIN DATA
+const skinDefs = [
+  {
+    key: "classic",
+    name: "Classic Pink",
+    price: 0,
+    desc: "Default pig, no cost."
+  },
+  {
+    key: "golden",
+    name: "Golden Pig",
+    price: 50,
+    desc: "Premium shiny pig. Costs 50 coins."
+  },
+  {
+    key: "shadow",
+    name: "Shadow Pig",
+    price: 100,
+    desc: "Dark stealth pig. Costs 100 coins."
+  }
+];
 
+const pigSkins = {
+  classic: {
+    body: "#f9a8d4",
+    head: "#f9a8d4",
+    snout: "#ec4899",
+    snoutDark: "#831843",
+    wing: "#fbcfe8",
+    ear: "#ec4899",
+    feet: "#db2777"
+  },
+  golden: {
+    body: "#facc15",
+    head: "#facc15",
+    snout: "#fbbf24",
+    snoutDark: "#92400e",
+    wing: "#fcd34d",
+    ear: "#f59e0b",
+    feet: "#b45309"
+  },
+  shadow: {
+    body: "#4b5563",
+    head: "#4b5563",
+    snout: "#6b7280",
+    snoutDark: "#111827",
+    wing: "#9ca3af",
+    ear: "#6b7280",
+    feet: "#111827"
+  }
+};
+
+let ownedSkins = {
+  classic: true,
+  golden: false,
+  shadow: false
+};
+let currentSkinKey = "classic";
+
+// THEMES
+const themes = {
+  day: {
+    skyTop: "#0ea5e9",
+    skyBottom: "#0369a1",
+    pipe: "#1e293b",
+    cloud: "#bae6fd"
+  },
+  night: {
+    skyTop: "#020617",
+    skyBottom: "#020617",
+    pipe: "#0f172a",
+    cloud: "#1f2937"
+  }
+};
+
+// LOCAL STORAGE KEYS
+const LS_BEST = "flappyPigBest";
+const LS_COINS = "flappyPigCoins";
+const LS_SKINS = "flappyPigSkins";
+
+// LOAD SAVE
+function loadSave() {
+  try {
+    const b = Number(localStorage.getItem(LS_BEST));
+    if (!Number.isNaN(b)) best = b;
+    const c = Number(localStorage.getItem(LS_COINS));
+    if (!Number.isNaN(c)) coins = c;
+
+    const skinsRaw = localStorage.getItem(LS_SKINS);
+    if (skinsRaw) {
+      const parsed = JSON.parse(skinsRaw);
+      ownedSkins = { ...ownedSkins, ...parsed };
+    }
+  } catch (e) {
+    console.warn("Failed to load save:", e);
+  }
+
+  bestEl.textContent = best;
+  coinsEl.textContent = coins;
+}
+
+// SAVE
+function saveGame() {
+  try {
+    localStorage.setItem(LS_BEST, String(best));
+    localStorage.setItem(LS_COINS, String(coins));
+    localStorage.setItem(LS_SKINS, JSON.stringify(ownedSkins));
+  } catch (e) {
+    console.warn("Failed to save game:", e);
+  }
+}
+
+// INITIALISE GAME
 function resetGame() {
-  bird = { x: 80, y: canvas.height/2, r: 14, vy: 0 };
+  pig = { x: 80, y: canvas.height / 2, r: 14, vy: 0 };
   pipes = [];
+  coinsOnField = [];
   score = 0;
   alive = true;
   paused = false;
-  document.getElementById("score").textContent = score;
+  flapPhase = 0;
+  flapBoostTimer = 0;
+  scoreEl.textContent = "0";
   lastTime = performance.now();
 }
 
+// SPAWN A PIPE PAIR + OPTIONAL COIN
 function addPipe() {
-  const top = 80 + Math.random()*220;
-  pipes.push({
+  const top = 80 + Math.random() * 220;
+  const pipe = {
     x: canvas.width,
     topHeight: top,
-    bottomY: top + pipeGap
-  });
+    bottomY: top + pipeGap,
+    scored: false
+  };
+  pipes.push(pipe);
+
+  // 50% chance to spawn a coin in the gap
+  if (Math.random() < 0.5) {
+    const gapCenter = top + pipeGap / 2;
+    coinsOnField.push({
+      x: canvas.width + pipeWidth / 2,
+      y: gapCenter + (Math.random() * 40 - 20),
+      r: 7,
+      collected: false
+    });
+  }
 }
 
+// UPDATE GAME LOGIC
 function update(dt) {
   if (paused || !alive) return;
 
-  bird.vy += gravity;
-  bird.y += bird.vy;
+  // Wing flap animation (faster after flap)
+  if (flapBoostTimer > 0) {
+    flapBoostTimer -= dt;
+    flapSpeed = 0.7;
+  } else {
+    flapSpeed = 0.3;
+  }
+  flapPhase += flapSpeed * dt;
+
+  // Pig physics
+  pig.vy += gravity;
+  pig.y += pig.vy;
 
   // Spawn pipes
-  if (pipes.length === 0 || pipes[pipes.length-1].x < canvas.width - 240) {
+  if (pipes.length === 0 || pipes[pipes.length - 1].x < canvas.width - 240) {
     addPipe();
   }
 
-  // Move pipes
-  pipes.forEach(p => p.x -= pipeSpeed);
+  // Move pipes & coins
+  pipes.forEach(p => p.x -= pipeSpeed * dt);
+  coinsOnField.forEach(c => c.x -= pipeSpeed * dt);
 
-  // Remove off-screen pipes
-  if (pipes[0].x < -pipeWidth) pipes.shift();
+  // Remove off-screen
+  if (pipes[0] && pipes[0].x < -pipeWidth) {
+    pipes.shift();
+  }
+  coinsOnField = coinsOnField.filter(c => c.x > -20 && !c.collected);
 
-  // Collision detection
+  // Collision + scoring
   pipes.forEach(p => {
+    // Collision with pipes
     if (
-      bird.x + bird.r > p.x &&
-      bird.x - bird.r < p.x + pipeWidth
+      pig.x + pig.r > p.x &&
+      pig.x - pig.r < p.x + pipeWidth
     ) {
-      if (bird.y - bird.r < p.topHeight ||
-          bird.y + bird.r > p.bottomY) {
+      if (pig.y - pig.r < p.topHeight ||
+          pig.y + pig.r > p.bottomY) {
         alive = false;
       }
     }
 
-    // Score counting
-    if (!p.scored && p.x + pipeWidth < bird.x) {
+    // Score when passed
+    if (!p.scored && p.x + pipeWidth < pig.x) {
       p.scored = true;
       score++;
-      document.getElementById("score").textContent = score;
+      scoreEl.textContent = score;
     }
   });
 
-  // Hit ground or sky
-  if (bird.y + bird.r > canvas.height || bird.y - bird.r < 0) {
+  // Coin collision (circle-circle)
+  coinsOnField.forEach(c => {
+    const dx = pig.x - c.x;
+    const dy = pig.y - c.y;
+    const dist = Math.sqrt(dx*dx + dy*dy);
+    if (dist < pig.r + c.r) {
+      c.collected = true;
+      coins += 1;
+      coinsEl.textContent = coins;
+      saveGame();
+    }
+  });
+
+  // Hit top or bottom
+  if (pig.y + pig.r > canvas.height || pig.y - pig.r < 0) {
     alive = false;
   }
 
-  // Save best
+  // Update best score
   if (!alive) {
     if (score > best) {
       best = score;
-      localStorage.setItem("flappyBest", best);
+      bestEl.textContent = best;
     }
+    saveGame();
   }
 }
 
+// DRAW EVERYTHING
 function draw() {
-  // Sky
-  ctx.fillStyle = "#0ea5e9";
-  ctx.fillRect(0,0,canvas.width,canvas.height);
+  const theme = themes[mode];
 
-  // Bird
-  ctx.fillStyle = "#facc15";
-  ctx.beginPath();
-  ctx.arc(bird.x, bird.y, bird.r, 0, Math.PI*2);
-  ctx.fill();
+  // Sky background gradient
+  const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+  grad.addColorStop(0, theme.skyTop);
+  grad.addColorStop(1, theme.skyBottom);
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // Clouds / stars
+  if (mode === "day") {
+    ctx.fillStyle = theme.cloud;
+    ctx.globalAlpha = 0.5;
+    ctx.beginPath();
+    ctx.arc(60, 90, 18, 0, Math.PI * 2);
+    ctx.arc(80, 85, 14, 0, Math.PI * 2);
+    ctx.arc(100, 92, 20, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.globalAlpha = 1;
+  } else {
+    ctx.fillStyle = "#e5e7eb";
+    for (let i = 0; i < 35; i++) {
+      const x = (i * 37) % canvas.width;
+      const y = (i * 53) % (canvas.height / 2);
+      if ((i + (Date.now() >> 7)) % 3 === 0) {
+        ctx.fillRect(x, y, 1, 1);
+      }
+    }
+  }
 
   // Pipes
+  ctx.fillStyle = theme.pipe;
   pipes.forEach(p => {
-    ctx.fillStyle = "#1e293b";
-
     // Top pipe
     ctx.fillRect(p.x, 0, pipeWidth, p.topHeight);
-
     // Bottom pipe
     ctx.fillRect(p.x, p.bottomY, pipeWidth, canvas.height - p.bottomY);
   });
 
-  // PAUSED text
+  // Coins
+  coinsOnField.forEach(c => {
+    ctx.fillStyle = "#facc15";
+    ctx.beginPath();
+    ctx.arc(c.x, c.y, c.r, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = "#92400e";
+    ctx.lineWidth = 2;
+    ctx.stroke();
+  });
+
+  // Flying pig
+  drawPig();
+
+  // Paused or dead overlays
   if (paused) {
+    ctx.fillStyle = "rgba(15,23,42,0.7)";
+    ctx.fillRect(0, canvas.height / 2 - 40, canvas.width, 80);
     ctx.fillStyle = "#e5e7eb";
-    ctx.font = "32px Arial";
-    ctx.fillText("Paused", canvas.width/2 - 60, canvas.height/2);
-  }
-
-  // DEAD text
-  if (!alive) {
-    ctx.fillStyle = "white";
-    ctx.font = "28px Arial";
-    ctx.fillText("Game Over!", canvas.width/2 - 80, canvas.height/2 - 10);
-
-    ctx.font = "18px Arial";
-    ctx.fillText("Best: " + best, canvas.width/2 - 40, canvas.height/2 + 20);
+    ctx.font = "26px system-ui";
+    ctx.fillText("Paused", canvas.width / 2 - 50, canvas.height / 2 - 5);
+    ctx.font = "14px system-ui";
+    ctx.fillText(
+      "Tab hidden – resume when you come back.",
+      canvas.width / 2 - 135,
+      canvas.height / 2 + 18
+    );
+  } else if (!alive) {
+    ctx.fillStyle = "rgba(15,23,42,0.7)";
+    ctx.fillRect(0, canvas.height / 2 - 55, canvas.width, 110);
+    ctx.fillStyle = "#e5e7eb";
+    ctx.font = "26px system-ui";
+    ctx.fillText("Game Over", canvas.width / 2 - 70, canvas.height / 2 - 15);
+    ctx.font = "15px system-ui";
+    ctx.fillText("Best: " + best, canvas.width / 2 - 35, canvas.height / 2 + 10);
+    ctx.fillText("Coins: " + coins, canvas.width / 2 - 42, canvas.height / 2 + 30);
   }
 }
 
+function drawPig() {
+  const skin = pigSkins[currentSkinKey];
+  const flapOffset = Math.sin(flapPhase) * 4;
+
+  ctx.save();
+  ctx.translate(pig.x, pig.y);
+  ctx.scale(1.1, 1.1);
+
+  // Body
+  ctx.fillStyle = skin.body;
+  ctx.fillRect(-14, -10, 28, 20);
+
+  // Head
+  ctx.fillStyle = skin.head;
+  ctx.fillRect(-20, -14, 18, 16);
+
+  // Snout
+  ctx.fillStyle = skin.snout;
+  ctx.fillRect(-20, -6, 10, 8);
+
+  // Snout nostrils
+  ctx.fillStyle = skin.snoutDark;
+  ctx.fillRect(-18, -4, 2, 2);
+  ctx.fillRect(-14, -4, 2, 2);
+
+  // Eye
+  ctx.fillStyle = "#000";
+  ctx.fillRect(-8, -8, 3, 3);
+
+  // Wing (animated flap)
+  ctx.fillStyle = skin.wing;
+  ctx.fillRect(6, -4 - flapOffset, 10, 12);
+
+  // Ear
+  ctx.fillStyle = skin.ear;
+  ctx.fillRect(-16, -17, 6, 6);
+
+  // Feet
+  ctx.fillStyle = skin.feet;
+  ctx.fillRect(-6, 10, 4, 4);
+  ctx.fillRect(2, 10, 4, 4);
+
+  ctx.restore();
+}
+
+// MAIN LOOP
 function gameLoop(time) {
-  const dt = (time - lastTime) / 16.666;
+  const dt = (time - lastTime) / 16.666; // ≈1 per 60fps frame
   lastTime = time;
 
   update(dt);
   draw();
-
   requestAnimationFrame(gameLoop);
 }
 
-// Jump / flap
+// FLAP / JUMP
 function flap() {
   if (!alive) {
     resetGame();
     return;
   }
-  bird.vy = jump;
+  pig.vy = jump;
+  flapBoostTimer = 12; // ~frames of boosted flap animation
 }
 
-// Input
+// INPUT EVENTS
 window.addEventListener("keydown", e => {
-  if (e.code === "Space" || e.code === "ArrowUp" || e.code === "KeyW") {
+  if (["Space","ArrowUp","KeyW"].includes(e.code)) {
+    e.preventDefault();
     flap();
   }
 });
@@ -236,17 +699,166 @@ canvas.addEventListener("mousedown", flap);
 canvas.addEventListener("touchstart", e => {
   e.preventDefault();
   flap();
+}, { passive: false });
+
+// RESTART BUTTON
+restartBtn.addEventListener("click", () => {
+  resetGame();
 });
 
-// Restart button
-document.getElementById("restartBtn").onclick = resetGame;
+// MODE TOGGLE
+modeBtn.addEventListener("click", () => {
+  setMode(mode === "day" ? "night" : "day");
+});
 
-// Pause when tab hidden
+// AUTO-PAUSE WHEN TAB HIDDEN
 document.addEventListener("visibilitychange", () => {
   paused = document.hidden;
 });
 
+// THEME
+function setMode(newMode) {
+  mode = newMode;
+  if (mode === "day") {
+    modeBtn.textContent = "Mode: Day 🌞";
+    document.body.style.background =
+      "radial-gradient(circle at top, #0ea5e9, #020617 60%)";
+  } else {
+    modeBtn.textContent = "Mode: Night 🌙";
+    document.body.style.background =
+      "radial-gradient(circle at top, #020617, #020617 80%)";
+  }
+}
+
+// SKINS & SHOP
+function refreshSkinSelect() {
+  skinSelect.innerHTML = "";
+  skinDefs.forEach(def => {
+    if (!ownedSkins[def.key]) return;
+    const opt = document.createElement("option");
+    opt.value = def.key;
+    opt.textContent = def.name;
+    skinSelect.appendChild(opt);
+  });
+  // Make sure currentSkinKey is owned; if not, fall back to classic
+  if (!ownedSkins[currentSkinKey]) currentSkinKey = "classic";
+  skinSelect.value = currentSkinKey;
+}
+
+skinSelect.addEventListener("change", () => {
+  const val = skinSelect.value;
+  if (ownedSkins[val]) {
+    currentSkinKey = val;
+    buildShopList(); // update Equipped badge
+    saveGame();
+  }
+});
+
+function openShop() {
+  shopOverlay.classList.remove("hidden");
+  buildShopList();
+}
+
+function closeShop() {
+  shopOverlay.classList.add("hidden");
+}
+
+shopBtn.addEventListener("click", openShop);
+closeShopBtn.addEventListener("click", closeShop);
+
+function buildShopList() {
+  shopListEl.innerHTML = "";
+  shopCoinsEl.textContent = coins;
+
+  skinDefs.forEach(def => {
+    const row = document.createElement("div");
+    row.className = "shop-item";
+
+    const main = document.createElement("div");
+    main.className = "shop-item-main";
+
+    const nameEl = document.createElement("div");
+    nameEl.className = "shop-name";
+    nameEl.textContent = def.name;
+
+    const badge = document.createElement("span");
+    badge.className = "badge";
+    if (ownedSkins[def.key]) {
+      badge.classList.add("badge-owned");
+      badge.textContent = "Owned";
+      if (currentSkinKey === def.key) {
+        badge.classList.add("badge-equipped");
+        badge.textContent = "Equipped";
+      }
+    } else if (def.price === 0) {
+      badge.textContent = "Free";
+      badge.classList.add("badge-owned");
+    } else {
+      badge.textContent = "Locked";
+    }
+    nameEl.appendChild(badge);
+
+    const desc = document.createElement("div");
+    desc.className = "shop-desc";
+    desc.textContent = def.desc;
+
+    main.appendChild(nameEl);
+    main.appendChild(desc);
+
+    const right = document.createElement("div");
+    right.className = "shop-item-right";
+
+    const price = document.createElement("div");
+    price.className = "shop-price";
+    price.textContent = def.price === 0 ? "Free" : `${def.price} coins`;
+
+    const btn = document.createElement("button");
+    btn.className = "btn";
+    btn.style.fontSize = "0.78rem";
+    btn.textContent = ownedSkins[def.key]
+      ? (currentSkinKey === def.key ? "Equipped" : "Equip")
+      : "Buy";
+
+    if (ownedSkins[def.key] && currentSkinKey === def.key) {
+      btn.disabled = true;
+    }
+
+    btn.addEventListener("click", () => {
+      if (!ownedSkins[def.key]) {
+        // Need to buy
+        if (coins < def.price) {
+          alert("Not enough coins!");
+          return;
+        }
+        coins -= def.price;
+        ownedSkins[def.key] = true;
+        coinsEl.textContent = coins;
+        saveGame();
+        refreshSkinSelect();
+        buildShopList();
+      } else {
+        // Equip
+        currentSkinKey = def.key;
+        refreshSkinSelect();
+        buildShopList();
+        saveGame();
+      }
+    });
+
+    right.appendChild(price);
+    right.appendChild(btn);
+
+    row.appendChild(main);
+    row.appendChild(right);
+
+    shopListEl.appendChild(row);
+  });
+}
+
 // START
+loadSave();
+setMode("day");
+refreshSkinSelect();
 resetGame();
 requestAnimationFrame(gameLoop);
 </script>
