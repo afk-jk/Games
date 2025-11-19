@@ -2,13 +2,15 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Mini Escape Room – Mini Games Arcade</title>
+  <title>Mini Escape Room – 10 Levels</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- Google AdSense -->
+  <!-- Optional: your AdSense script goes here, above the style tag -->
+  <!--
   <script async
     src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1522584826215697"
     crossorigin="anonymous"></script>
+  -->
 
   <style>
     :root {
@@ -39,7 +41,7 @@
       justify-content: center;
       align-items: center;
       padding: 10px;
-      overflow: hidden; /* no scroll */
+      overflow: hidden;
       color: var(--text);
     }
 
@@ -54,6 +56,33 @@
       display: flex;
       flex-direction: column;
       gap: 8px;
+      position: relative;
+    }
+
+    .back-link {
+      position: absolute;
+      top: 8px;
+      left: 10px;
+      font-size: 0.8rem;
+      color: var(--muted);
+      text-decoration: none;
+      padding: 3px 8px 3px 6px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.4);
+      background: rgba(15,23,42,0.95);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      z-index: 5;
+    }
+
+    .back-link span {
+      font-size: 0.9rem;
+    }
+
+    .back-link:hover {
+      border-color: var(--accent);
+      color: var(--accent);
     }
 
     .top-bar {
@@ -63,6 +92,7 @@
       gap: 8px;
       flex-wrap: wrap;
       font-size: 0.8rem;
+      padding-left: 110px; /* to avoid overlapping back button */
     }
 
     .title {
@@ -105,7 +135,6 @@
       opacity: 0.6;
     }
 
-    /* Common item styles */
     .item {
       position: absolute;
       cursor: pointer;
@@ -154,7 +183,7 @@
       box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.9);
     }
 
-    /* Table / desk */
+    /* Desk */
     .desk {
       width: 30%;
       height: 18%;
@@ -176,7 +205,7 @@
       border-radius: 7px 7px 0 0;
     }
 
-    /* Box on desk */
+    /* Lockbox on desk */
     .box {
       width: 30%;
       height: 40%;
@@ -346,16 +375,14 @@
     .book {
       flex: 1;
       border-radius: 3px;
-      background: linear-gradient(
-        #f97316,
-        #b45309
-      );
+      background: linear-gradient(#f97316, #b45309);
     }
 
     .book:nth-child(2) {
       background: linear-gradient(#22c55e, #15803d);
       height: 70%;
     }
+
     .book:nth-child(3) {
       background: linear-gradient(#38bdf8, #0ea5e9);
       height: 90%;
@@ -383,7 +410,7 @@
       color: #0f172a;
     }
 
-    /* Key (hidden until found) */
+    /* Key */
     .key {
       position: absolute;
       width: 36px;
@@ -392,6 +419,7 @@
       background: linear-gradient(90deg, #facc15, #f97316);
       box-shadow: 0 0 6px rgba(250, 204, 21, 0.7);
       display: none;
+      z-index: 2;
     }
 
     .key-head {
@@ -414,8 +442,6 @@
       background: #f97316;
       border-radius: 0 3px 3px 0;
     }
-
-    /* Info bar & inventory */
 
     .bottom-bar {
       display: flex;
@@ -481,7 +507,7 @@
       border: 2px solid #facc15;
     }
 
-    /* Dialog overlay */
+    /* Overlays */
 
     .overlay {
       position: fixed;
@@ -499,7 +525,7 @@
 
     .dialog {
       width: 100%;
-      max-width: 320px;
+      max-width: 340px;
       background: #020617;
       border-radius: 12px;
       border: 1px solid var(--border);
@@ -540,6 +566,7 @@
       display: flex;
       justify-content: flex-end;
       gap: 6px;
+      flex-wrap: wrap;
     }
 
     .btn-small {
@@ -578,13 +605,55 @@
     .dialog-fail {
       color: var(--danger);
     }
+
+    /* Level select dashboard */
+
+    .level-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 6px;
+      margin-top: 6px;
+    }
+
+    .level-btn {
+      padding: 6px 0;
+      border-radius: 8px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      background: #020617;
+      color: var(--text);
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
+
+    .level-btn span {
+      display: block;
+      font-size: 0.63rem;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .level-btn:hover {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px var(--accent-soft);
+    }
+
+    .level-btn.current {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+    }
   </style>
 </head>
 <body>
   <div class="shell">
+    <a href="index.html" class="back-link">
+      <span>←</span> Back to Games
+    </a>
+
     <div class="top-bar">
-      <div class="title">Mini Escape Room</div>
-      <div class="hint-pill">Tap items to inspect them. There’s a key hidden somewhere…</div>
+      <div class="title" id="levelTitle">Mini Escape Room – Level 1</div>
+      <div class="hint-pill" id="hintPill">
+        Tap items to inspect them. There’s a key hidden somewhere…
+      </div>
     </div>
 
     <div class="room-wrapper">
@@ -598,12 +667,12 @@
         <!-- Lockbox on desk -->
         <div class="item box" data-item="box" title="Lockbox"></div>
 
-        <!-- Painting with hidden clue -->
+        <!-- Painting -->
         <div class="item painting" data-item="painting" title="Painting">
           <div class="painting-inner"></div>
         </div>
 
-        <!-- Shelf with books and clue note -->
+        <!-- Shelf -->
         <div class="item shelf" data-item="shelf" title="Shelf">
           <div class="book-row">
             <div class="book"></div>
@@ -622,7 +691,7 @@
         <!-- Rug -->
         <div class="item rug" data-item="rug" title="Rug"></div>
 
-        <!-- Key (revealed after unlocking box) -->
+        <!-- Key -->
         <div class="key" id="key">
           <div class="key-head"></div>
           <div class="key-teeth"></div>
@@ -632,7 +701,7 @@
 
     <div class="bottom-bar">
       <div class="message" id="message">
-        You wake up in a locked room. <strong>Tap around</strong> and figure out how to escape.
+        Choose a level from the dashboard to begin.
       </div>
       <div class="inventory">
         <span class="inv-label">Inventory:</span>
@@ -662,11 +731,28 @@
   <div class="overlay" id="winOverlay">
     <div class="dialog">
       <div class="dialog-title">You Escaped!</div>
-      <div class="dialog-text">
+      <div class="dialog-text" id="winText">
         The lock clicks open and the door swings outward. Fresh air! 🎉
       </div>
       <div class="dialog-btn-row">
-        <button class="btn-small btn-primary" id="playAgainBtn">Play Again</button>
+        <button class="btn-small btn-ghost" id="winLevelSelectBtn">Level Select</button>
+        <button class="btn-small btn-primary" id="nextLevelBtn">Next Level</button>
+        <button class="btn-small btn-primary" id="playAgainBtn">Replay Level</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Level select dashboard -->
+  <div class="overlay visible" id="levelSelectOverlay">
+    <div class="dialog">
+      <div class="dialog-title">Escape Room – Choose Level</div>
+      <div class="dialog-text">
+        Each level reuses the same room but changes the clues and the code. They get
+        a little trickier as you go.
+      </div>
+      <div class="level-grid" id="levelGrid"></div>
+      <div class="dialog-btn-row" style="margin-top:8px;">
+        <button class="btn-small btn-primary" id="closeLevelSelectBtn">Start Level</button>
       </div>
     </div>
   </div>
@@ -676,6 +762,8 @@
       const messageEl = document.getElementById("message");
       const keyEl = document.getElementById("key");
       const invSlotEl = document.getElementById("invSlot");
+      const levelTitleEl = document.getElementById("levelTitle");
+      const hintPillEl = document.getElementById("hintPill");
 
       const codeOverlay = document.getElementById("codeOverlay");
       const codeInput = document.getElementById("codeInput");
@@ -684,12 +772,242 @@
       const submitCodeBtn = document.getElementById("submitCodeBtn");
 
       const winOverlay = document.getElementById("winOverlay");
+      const winText = document.getElementById("winText");
       const playAgainBtn = document.getElementById("playAgainBtn");
+      const nextLevelBtn = document.getElementById("nextLevelBtn");
+      const winLevelSelectBtn = document.getElementById("winLevelSelectBtn");
 
-      const CORRECT_CODE = "314";
+      const levelSelectOverlay = document.getElementById("levelSelectOverlay");
+      const levelGrid = document.getElementById("levelGrid");
+      const closeLevelSelectBtn = document.getElementById("closeLevelSelectBtn");
+
+      const keyDefaultNote = document.querySelector(".note");
+
+      const levels = [
+        {
+          id: 1,
+          name: "Level 1",
+          label: "Tutorial",
+          code: "314",
+          intro:
+            "You wake up in a locked room. The code is almost handed to you…",
+          hint:
+            "This first one is easy – the painting and the note basically tell you the answer.",
+          paintingMsg:
+            "On the back of the painting someone scribbled: <strong>314</strong>.",
+          shelfMsg:
+            "There’s a small note sticking out that repeats the same numbers as the painting.",
+          deskMsg:
+            "A plain desk with a lockbox. The code is probably written down somewhere obvious.",
+          rugMsg: "Under the rug: just dust. The designers went easy on you.",
+          plantMsg:
+            "No key in the soil – at least not on this level.",
+          boxHint:
+            "The keypad waits for 3 digits. The painting was very direct, wasn’t it?"
+        },
+        {
+          id: 2,
+          name: "Level 2",
+          label: "Simple Code",
+          code: "258",
+          intro:
+            "This time the answer isn’t written out as clearly, but it’s still close by.",
+          hint:
+            "Look at the books and the note on the shelf – rows, columns… numbers.",
+          paintingMsg:
+            "The painting’s back shows three stacked lines, each with <strong>2 • 5 • 8</strong> in different order.",
+          shelfMsg:
+            "On the note: “Middle column. Always read from top to bottom.”",
+          deskMsg:
+            "The desk is tidy. Whoever locked the box likes neat columns.",
+          rugMsg: "You check the rug. Still nothing, but you’re thorough.",
+          plantMsg:
+            "You dig a little in the pot. No key – but the plant looks offended.",
+          boxHint:
+            "Three digits, middle column, top to bottom…"
+        },
+        {
+          id: 3,
+          name: "Level 3",
+          label: "Mathy",
+          code: "739",
+          intro:
+            "The code is hidden in little number tricks around the room.",
+          hint:
+            "Painting + shelf note together describe the three digits.",
+          paintingMsg:
+            "On the back: “Prime, prime, prime. 7 is between 5 and 11.”",
+          shelfMsg:
+            "The scribbled note reads: “Row sums: 10 / 12 / 16. Middle digits are 3 / ? / 9.”",
+          deskMsg:
+            "The desk drawer is jammed, but someone carved “7?9” into the wood.",
+          rugMsg:
+            "The pattern on the rug forms rough 7 • 3 • 9 shapes if you squint.",
+          plantMsg:
+            "The plant tag just says: “Don’t overthink it.”",
+          boxHint:
+            "You’ve pretty much seen 7, 3, and 9 everywhere. The order isn’t subtle."
+        },
+        {
+          id: 4,
+          name: "Level 4",
+          label: "Pi-ish",
+          code: "159",
+          intro:
+            "Everything in this room suddenly loves circles and π.",
+          hint:
+            "Think of π = 3.14159… The three digits you need are hidden in fragments.",
+          paintingMsg:
+            "Behind the painting: a circle with “3.14 159…” and a messy line under <strong>159</strong>.",
+          shelfMsg:
+            "A torn page from a math book: “Take the three digits after 3.14”.",
+          deskMsg:
+            "The desk has a doodle of a pizza sliced into 10. Someone circled 1, 5 and 9.",
+          rugMsg:
+            "The rug’s stitched pattern has 1, 5, 9 tiny golden threads near the edge.",
+          plantMsg:
+            "The plant label: “Water every 1, then 5, then 9 days – got it?”",
+          boxHint:
+            "All of them keep pointing at the same three digits after 3.14."
+        },
+        {
+          id: 5,
+          name: "Level 5",
+          label: "Hidden Order",
+          code: "427",
+          intro:
+            "Now the hints are split between objects – you must assemble them.",
+          hint:
+            "Each object tells you a position. Combine them into one code.",
+          paintingMsg:
+            "On the painting’s back: “First digit: number of corners on the golden frame.” (There are 4.)",
+          shelfMsg:
+            "The note says: “Second digit: books in the tallest stack on this shelf.” (There are 2.)",
+          deskMsg:
+            "Carved underneath the desk: “Third digit: number of desk legs minus one.” (3 legs visible + 1 imaginary = 4? But there are 3 drawn, so 3–? The scribble leaves 7.)",
+          rugMsg:
+            "The rug’s pattern has 7 spokes reaching the centre.",
+          plantMsg:
+            "A sticky note on the pot: “Rug decides the last digit.”",
+          boxHint:
+            "Corners (4), tallest stack (2), rug spokes (7): 4-2-7."
+        },
+        {
+          id: 6,
+          name: "Level 6",
+          label: "Colour Code",
+          code: "836",
+          intro:
+            "Colours and positions now matter more than plain numbers.",
+          hint:
+            "Books and painting colours encode a simple 3-digit pattern.",
+          paintingMsg:
+            "The sunset painting has three coloured dots underneath: orange, blue, green.",
+          shelfMsg:
+            "The book spines: orange is 8 thick stripes, blue is 3, green is 6.",
+          deskMsg:
+            "On the desk a note: “Use stripes count – follow the painting’s colour order.”",
+          rugMsg:
+            "Rug shows faint O / B / G letters woven together.",
+          plantMsg:
+            "Plant tag: “Orange, Blue, Green. That order again.”",
+          boxHint:
+            "Orange = 8, Blue = 3, Green = 6 → 836."
+        },
+        {
+          id: 7,
+          name: "Level 7",
+          label: "Clockwork",
+          code: "745",
+          intro:
+            "Time is the main clue now – imaginary clocks everywhere.",
+          hint:
+            "Treat objects as clock hands pointing at numbers.",
+          paintingMsg:
+            "The back of the painting shows a clock with one hand pointing at 7.",
+          shelfMsg:
+            "The shelf note: “Middle digit: hour you’d read on the clock on the desk.”",
+          deskMsg:
+            "A sketched mini-clock on the desk has its hand pointing at 4.",
+          rugMsg:
+            "You notice 5 darker stitches forming a tiny clock hand pointing to 5.",
+          plantMsg:
+            "Plant label: “The rug keeps time for the last digit.”",
+          boxHint:
+            "First digit 7 (painting), second 4 (desk clock), third 5 (rug hand)."
+        },
+        {
+          id: 8,
+          name: "Level 8",
+          label: "Binary-ish",
+          code: "568",
+          intro:
+            "Now the hints talk in almost-binary, but not quite.",
+          hint:
+            "Shelf tells you how to convert marks into digits.",
+          paintingMsg:
+            "Behind the painting: rows of marks like |||| |||| |||   and a scribble: “5 / 6 / 8”.",
+          shelfMsg:
+            "Note on the shelf: “Just count the groups; the marks are a distraction.”",
+          deskMsg:
+            "The desk has 5, then 6, then 8 small dots carved in a line.",
+          rugMsg:
+            "Rug border repeats 5-6-8 pattern if you trace it.",
+          plantMsg:
+            "Plant tag: “They’re not codewords. They’re literally just the numbers.”",
+          boxHint:
+            "Everything repeats 5, 6, and 8 in that order."
+        },
+        {
+          id: 9,
+          name: "Level 9",
+          label: "Combined Clues",
+          code: "902",
+          intro:
+            "Multiple clues each give part of a different digit.",
+          hint:
+            "Zero is hidden in the only place that doesn’t show any number at all.",
+          paintingMsg:
+            "The painting has a city skyline with 9 tall buildings. On the back, one of them is circled.",
+          shelfMsg:
+            "Shelf note: “Middle digit belongs to the only object that refuses to pick a number.”",
+          deskMsg:
+            "Desk scribble: “Start with skyscrapers.”",
+          rugMsg:
+            "The rug has 2 large rings near the edge.",
+          plantMsg:
+            "Plant tag: “I’m the middle digit: I proudly show nothing at all.” (0)",
+          boxHint:
+            "Skyscrapers (9), plant shows 0, rug rings (2) → 9-0-2."
+        },
+        {
+          id: 10,
+          name: "Level 10",
+          label: "Final",
+          code: "741",
+          intro:
+            "Final level. Every object contributes to exactly one digit.",
+          hint:
+            "Each clue says whether it’s first, second or third – assemble them.",
+          paintingMsg:
+            "On the back: “I am the first: number of bright rays around the painted sun.” (There are 7.)",
+          shelfMsg:
+            "The shelf note: “I am the second: count only the green books.” (There are 4.)",
+          deskMsg:
+            "Carved on the desk underside: “I am the third. Look at how many legs this desk is pretending to have.” (Three drawn, but one faintly erased → 1.)",
+          rugMsg:
+            "The rug pattern circles the sun, echoing 7 rays, 4 green, 1 desk.",
+          plantMsg:
+            "Plant label: “Sun, shelf, desk – 1-2-3 digits in that order.”",
+          boxHint:
+            "Sun rays (7), green books (4), “final” desk leg (1) → 741."
+        }
+      ];
+
+      let currentLevelIndex = 0; // 0-based
+      let currentLevel = levels[0];
 
       const state = {
-        clueSeen: false,
         boxUnlocked: false,
         keyPickedUp: false,
         doorOpened: false
@@ -699,12 +1017,31 @@
         messageEl.innerHTML = html;
       }
 
+      function resetGame(keepDashboardOpen) {
+        state.boxUnlocked = false;
+        state.keyPickedUp = false;
+        state.doorOpened = false;
+
+        keyEl.style.display = "none";
+        invSlotEl.innerHTML = "";
+
+        keyDefaultNote.textContent = currentLevel.id === 1 ? "3 • 1 • 4" : "";
+        levelTitleEl.textContent =
+          "Mini Escape Room – Level " + currentLevel.id;
+        hintPillEl.textContent = currentLevel.hint;
+
+        if (!keepDashboardOpen) {
+          setMessage(currentLevel.intro);
+        }
+      }
+
       function showCodeOverlay() {
         codeOverlay.classList.add("visible");
         codeInput.value = "";
         codeInput.focus();
         codeText.classList.remove("dialog-success", "dialog-fail");
-        codeText.textContent = "The box has a small keypad. Maybe a 3-digit code?";
+        codeText.textContent =
+          "The box has a small keypad. Maybe a 3-digit code?";
       }
 
       function hideCodeOverlay() {
@@ -713,18 +1050,37 @@
 
       function showWinOverlay() {
         winOverlay.classList.add("visible");
+
+        if (currentLevel.id === levels.length) {
+          winText.textContent =
+            "Final door unlocked. You’ve cleared all 10 levels! 🎉";
+          nextLevelBtn.style.display = "none";
+        } else {
+          winText.textContent =
+            "The lock clicks open and the door swings outward. On to the next one?";
+          nextLevelBtn.style.display = "inline-block";
+        }
       }
 
       function hideWinOverlay() {
         winOverlay.classList.remove("visible");
       }
 
-      // Position key on top of the box visually
+      function showLevelSelectOverlay() {
+        levelSelectOverlay.classList.add("visible");
+        updateLevelGridButtons();
+      }
+
+      function hideLevelSelectOverlay() {
+        levelSelectOverlay.classList.remove("visible");
+      }
+
+      // Position key visually on top of box
       function positionKeyOnBox() {
         const box = document.querySelector('[data-item="box"]');
         const roomRect = box.parentElement.getBoundingClientRect();
         const boxRect = box.getBoundingClientRect();
-        const keyRect = keyEl.getBoundingClientRect(); // just to know size
+        const keyRect = keyEl.getBoundingClientRect();
 
         const xCenter = boxRect.left + boxRect.width / 2;
         const yTop = boxRect.top + boxRect.height * 0.2;
@@ -736,7 +1092,6 @@
         keyEl.style.top = offsetY + "px";
       }
 
-      // Handle clicks on room items
       document.querySelectorAll(".item").forEach((item) => {
         item.addEventListener("click", () => {
           const type = item.dataset.item;
@@ -746,38 +1101,29 @@
 
       function handleItemClick(type) {
         if (type === "painting") {
-          state.clueSeen = true;
-          setMessage(
-            "You lift the painting and scribbled on the back you see: <strong>3 · 1 · 4</strong>."
-          );
+          setMessage(currentLevel.paintingMsg);
         } else if (type === "shelf") {
-          setMessage(
-            "The bookshelf is neatly arranged. A small note sticks out with numbers that match the painting."
-          );
-        } else if (type === "plant") {
-          setMessage(
-            "You check under the pot and poke through the soil. Nothing but dirt."
-          );
-        } else if (type === "rug") {
-          setMessage(
-            "You lift up the rug. No trap door, no key – just a cold floor."
-          );
+          setMessage(currentLevel.shelfMsg);
         } else if (type === "desk") {
-          setMessage(
-            "A sturdy desk. Apart from the mysterious lockbox on top, there’s nothing interesting."
-          );
+          setMessage(currentLevel.deskMsg);
+        } else if (type === "rug") {
+          setMessage(currentLevel.rugMsg);
+        } else if (type === "plant") {
+          setMessage(currentLevel.plantMsg);
         } else if (type === "box") {
           if (!state.boxUnlocked) {
             showCodeOverlay();
           } else if (!state.keyPickedUp) {
-            setMessage("The box is open. A small <strong>key</strong> rests inside.");
+            setMessage(
+              "The box is open. A small <strong>key</strong> rests inside."
+            );
           } else {
             setMessage("The box is empty now.");
           }
         } else if (type === "door") {
           if (!state.keyPickedUp) {
             setMessage(
-              "You tug the handle. It's locked tight. You'll need a <strong>key</strong>."
+              "You tug the handle. It's locked tight. You’ll need a <strong>key</strong>."
             );
           } else if (!state.doorOpened) {
             state.doorOpened = true;
@@ -786,30 +1132,27 @@
         }
       }
 
-      // Key pickup
       keyEl.addEventListener("click", () => {
         if (!state.boxUnlocked || state.keyPickedUp) return;
         state.keyPickedUp = true;
         keyEl.style.display = "none";
-
-        invSlotEl.innerHTML = '<div class="inv-key" title="Brass key"></div>';
+        invSlotEl.innerHTML =
+          '<div class="inv-key" title="Brass key"></div>';
         setMessage(
           "You picked up a small brass key. It looks like it would fit the door."
         );
       });
 
-      // Code overlay events
       cancelCodeBtn.addEventListener("click", hideCodeOverlay);
 
       submitCodeBtn.addEventListener("click", () => {
         const code = codeInput.value.trim();
-        if (code === CORRECT_CODE) {
+        if (code === currentLevel.code) {
           state.boxUnlocked = true;
           codeText.textContent = "The box clicks open. Something glints inside.";
           codeText.classList.remove("dialog-fail");
           codeText.classList.add("dialog-success");
 
-          // Reveal key
           keyEl.style.display = "block";
           positionKeyOnBox();
 
@@ -820,7 +1163,7 @@
             );
           }, 700);
         } else {
-          codeText.textContent = "That code doesn’t seem to work.";
+          codeText.textContent = currentLevel.boxHint || "That code doesn’t seem to work.";
           codeText.classList.remove("dialog-success");
           codeText.classList.add("dialog-fail");
         }
@@ -832,36 +1175,75 @@
         }
       });
 
-      // Win overlay
       playAgainBtn.addEventListener("click", () => {
         hideWinOverlay();
-        resetGame();
+        resetGame(false);
       });
 
-      function resetGame() {
-        state.clueSeen = false;
-        state.boxUnlocked = false;
-        state.keyPickedUp = false;
-        state.doorOpened = false;
+      nextLevelBtn.addEventListener("click", () => {
+        hideWinOverlay();
+        if (currentLevel.id < levels.length) {
+          currentLevelIndex = currentLevel.id; // move to next
+          currentLevel = levels[currentLevelIndex];
+          resetGame(false);
+        }
+      });
 
-        keyEl.style.display = "none";
-        invSlotEl.innerHTML = "";
-        setMessage(
-          "You wake up in a locked room. <strong>Tap around</strong> and figure out how to escape."
-        );
+      winLevelSelectBtn.addEventListener("click", () => {
+        hideWinOverlay();
+        showLevelSelectOverlay();
+      });
+
+      // Level select dashboard
+
+      function updateLevelGridButtons() {
+        levelGrid.innerHTML = "";
+        levels.forEach((lvl, index) => {
+          const btn = document.createElement("button");
+          btn.className = "level-btn";
+          if (index === currentLevelIndex) {
+            btn.classList.add("current");
+          }
+          btn.dataset.index = index;
+          btn.innerHTML =
+            "L" +
+            lvl.id +
+            '<span>' +
+            lvl.label +
+            "</span>";
+          btn.addEventListener("click", () => {
+            currentLevelIndex = index;
+            currentLevel = levels[index];
+            resetGame(true);
+            updateLevelGridButtons();
+          });
+          levelGrid.appendChild(btn);
+        });
       }
 
-      // Reposition key on resize (if box open)
+      closeLevelSelectBtn.addEventListener("click", () => {
+        hideLevelSelectOverlay();
+        resetGame(false);
+      });
+
+      // Reposition key on resize (if visible)
       window.addEventListener("resize", () => {
         if (state.boxUnlocked && !state.keyPickedUp && keyEl.style.display === "block") {
           positionKeyOnBox();
         }
       });
 
-      // Pause nothing necessary (no timers), but we can close overlays if tab hidden
       document.addEventListener("visibilitychange", () => {
-        if (document.hidden) hideCodeOverlay();
+        if (document.hidden) {
+          hideCodeOverlay();
+        }
       });
+
+      // Initialise dashboard and game state
+      currentLevel = levels[currentLevelIndex];
+      updateLevelGridButtons();
+      resetGame(true);
+      setMessage("Choose a level from the dashboard to begin.");
     })();
   </script>
 </body>
